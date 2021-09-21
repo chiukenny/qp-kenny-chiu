@@ -2,4 +2,27 @@
 
 % Summary section
 
-\section{Summary}
+\section{Conceptual summary}
+
+The paper by \textcite{Mouli:2021} examines the problem of extrapolating patterns learned from training data collected from a single environment to data collected from other environments. This problem context falls under the idea of \textit{domain adaptation} that has been explored in recent literature \parencite{Farahani:2020}. However, a key assumption in \citeauthor{Mouli:2021}'s work that distinguishes it from previous work in the literature is that the training data come from a single environment as opposed to multiple environments. Several previously proposed methods for domain adaptation---such as \textit{Invariant Risk Minimization} \parencite{Arjovsky:2020} (IRM)---rely on training data from multiple environments and therefore would fail under this problem context. \citeauthor{Mouli:2021} take a different approach by viewing extrapolation as counterfactual reasoning in a specified structural causal model (SCM) and assuming known (linear automorphism) group structures on the non-causal mechanisms. Under this formulation, \citeauthor{Mouli:2021} introduce a learning framework for the single-environment context that is able to learn invariances that do not contradict the data. In this conceptual summary, we review the key contributions of the paper by \textcite{Mouli:2021} and discuss the strengths and weaknesses of their work.
+
+\subsection{Key differences from previous work}
+
+Various methods for domain adaptation have been proposed in the literature, and how the work by \textcite{Mouli:2021} relates to these methods are highlighted in their paper. For example, methods based on causal inference such as IRM and \textit{Independent Causal Mechanisms} \parencite{Parascandolo:2018} broadly involve learning some internal representation of the data that is invariant to environment-specific, non-causal mechanisms. The invariant representation is learned from the training data which come from multiple environments. When the data come from a single environment, the representation cannot determine which aspects of the data are environment-specific and so the representation is unlikely to extrapolate to new environments. The learning framework proposed by \citeauthor{Mouli:2021} which does work with single-environment data has an advantage over existing methods in these settings.
+\\
+
+Another approach for domain adaptation is based on data augmentation \parencite{Chen:2020} where training is done with not only the original data but also proper transformations of the data. \textcite{Mouli:2021} explains that data augmentation is a type of \textit{forced invariance} where certain transformations of the data may actually introduce contradictions (e.g., images of digits 6 and 9 are not invariant to 180$^o$ rotations). Their proposed learning framework aims to learn only the invariances that do not contradict the data.
+
+\subsection{Main contributions}
+\todo include empirical results
+ 
+\subsection{Limitations}
+
+\todo
+limitation: known groups
+
+
+\newpage
+
+
+\section{Technical summary}
