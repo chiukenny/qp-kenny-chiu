@@ -4,22 +4,52 @@
 
 \section{Conceptual summary}
 
-The paper by \textcite{Mouli:2021} examines the problem of extrapolating patterns learned from training data collected from a single environment to data collected from other environments. This problem context falls under the idea of \textit{domain adaptation} that has been explored in recent literature \parencite{Farahani:2020}. However, a key assumption in \citeauthor{Mouli:2021}'s work that distinguishes it from previous work in the literature is that the training data come from a single environment as opposed to multiple environments. Several previously proposed methods for domain adaptation---such as \textit{Invariant Risk Minimization} \parencite{Arjovsky:2020} (IRM)---rely on training data from multiple environments and therefore would fail under this problem context. \citeauthor{Mouli:2021} take a different approach by viewing extrapolation as counterfactual reasoning in a specified structural causal model (SCM) and assuming known (linear automorphism) group structures on the non-causal mechanisms. Under this formulation, \citeauthor{Mouli:2021} introduce a learning framework for the single-environment context that is able to learn invariances that do not contradict the data. In this conceptual summary, we review the key contributions of the paper by \textcite{Mouli:2021} and discuss the strengths and weaknesses of their work.
+The paper by \textcite{Mouli:2021} examines the problem of extrapolating patterns learned from training data collected from a single environment to data collected from other environments. This problem context falls under the idea of \textit{domain adaptation} that has been explored in recent literature \parencite{Farahani:2020}. However, a key assumption in \citeauthor{Mouli:2021}'s work that distinguishes it from previous work in the literature is that the training data come from a single environment as opposed to multiple environments. Several previously proposed methods for domain adaptation---such as \textit{Invariant Risk Minimization} \parencite{Arjovsky:2020} (IRM)---rely on training data from multiple environments and therefore would fail under this problem context. \citeauthor{Mouli:2021} take a different approach by viewing extrapolation as counterfactual reasoning in a specified structural causal model (SCM) and assuming known (linear automorphism) group structures on the non-causal mechanisms. Under this formulation, \citeauthor{Mouli:2021} introduce a learning framework for the single-environment context that is able to learn invariances that do not contradict the data. In this conceptual summary, we review the key contributions of the paper by \textcite{Mouli:2021} and discuss the strengths and weaknesses of their approach.
+
 
 \subsection{Key differences from previous work}
 
-Various methods for domain adaptation have been proposed in the literature, and how the work by \textcite{Mouli:2021} relates to these methods are highlighted in their paper. For example, methods based on causal inference such as IRM and \textit{Independent Causal Mechanisms} \parencite{Parascandolo:2018} broadly involve learning some internal representation of the data that is invariant to environment-specific, non-causal mechanisms. The invariant representation is learned from the training data which come from multiple environments. When the data come from a single environment, the representation cannot determine which aspects of the data are environment-specific and so the representation is unlikely to extrapolate to new environments. The learning framework proposed by \citeauthor{Mouli:2021} which does work with single-environment data has an advantage over existing methods in these settings.
+Various methods for domain adaptation have been proposed in the literature, and how the work by \textcite{Mouli:2021} relates to these methods are highlighted in their paper. For example, methods based on causal inference such as IRM and \textit{Independent Causal Mechanisms} \parencite{Parascandolo:2018} (ICM) broadly involve learning some internal representation of the data that is invariant to environment non-causal mechanisms. The invariant representation is learned from the training data which come from multiple environments. When the data come from a single environment, the representation cannot determine which aspects of the data are environment-specific and so the representation is unlikely to extrapolate to new environments. The learning framework proposed by \citeauthor{Mouli:2021} works with single-environment data and has an advantage over existing methods in these settings.
 \\
 
-Another approach for domain adaptation is based on data augmentation \parencite{Chen:2020} where training is done with not only the original data but also proper transformations of the data. \textcite{Mouli:2021} explains that data augmentation is a type of \textit{forced invariance} where certain transformations of the data may actually introduce contradictions (e.g., images of digits 6 and 9 are not invariant to 180$^o$ rotations). Their proposed learning framework aims to learn only the invariances that do not contradict the data.
+Another well-known approach to domain adaptation is based on data augmentation \parencite{Chen:2020} where training is done with not only the original data but also proper transformations of the data. \citeauthor{Mouli:2021} explains that data augmentation is a type of \textit{forced group invariance} (i.e., forced \textit{G-invariance}) where certain transformations of the data may actually introduce contradictions (e.g., trying to enforce rotation invariance in images of digits, but digits 6 and 9 are not invariant to 180$^o$ rotations). \citeauthor{Mouli:2021}'s proposed learning framework aims to learn only the invariances that do not contradict the training data.
+
 
 \subsection{Main contributions}
-\todo include empirical results
+
+The main contributions of the paper by \textcite{Mouli:2021} include a formulation of the single-environment extrapolation problem, a learning framework based on the formulation that aims to learn the non-contradicting invariances, and an empirical evaluation of standard neural networks versus neural networks trained using the proposed learning framework.
+\\
+
+\citeauthor{Mouli:2021}'s formulation of the single-environment extrapolation problem is based on the ICM literature where a SCM is used to describe the input variables that influence or are irrelevant to the internal representation across environments (\todo cite?). Extrapolation is then seen as counterfactual reasoning where being able to extrapolate to different environments is tied to the representation being invariant to interventions on non-causal environment variables. \citeauthor{Mouli:2021} extends this idea by assuming known linear automorphism groups acting on the non-causal variables, in which case extrapolation of a representation is equivalent to the representation being counterfactually invariant to a group (i.e., \textit{CG-invariant}). This extension is the crux of the formulation that allows the proposed learning framework to work with single-environment data.
+\\
+
+The learning framework proposed by \citeauthor{Mouli:2021} aims to learn an internal representation that is CG-invariant to specified groups that do not contradict the training data. \citeauthor{Mouli:2021} show that CG-invariance is stronger than G-invariance (Theorem 1), but when the group acting on the non-causal variables is a normal subgroup of the group acting on all variables, then G-invariance also implies CG-invariance (Theorem 2). These results establish the group conditions under which it is sufficient for the model to learn G-invariances in place of CG-invariances.
+\\
+
+The challenge in learning the G-invariances that do not contradict the training data is due to the fact that the set of non-causal variables among all variables is unknown. To learn the invariances for the unknown set, \citeauthor{Mouli:2021} require the groups to be (finite) linear automorphisms. A group-invariant transformation can be constructed by averaging over members of the group (the \textit{Reynolds operator}, Lemma 1). For linear transformations, the averaged transformation is a projection operator with eigenvalues 1 and 0. The left eigenspace spanned by eigenvectors with eigenvalue 1 represents the space of transformations that are invariant to the group (Lemma 2). \citeauthor{Mouli:2021} exploit this property by computing the intersection of these subspaces for all subsets of the set of groups, and the set of invariant subspaces can then be partially ordered by the size of their corresponding subset (i.e., the \textit{strength} of the invariance, Theorem 3). The objective optimized in the learning framework then includes a regularization term that encourages learning a representation with the strongest G-invariance that does not significantly contradict the data. The key aspects of this learning framework include needing to specify known groups, requiring the groups to be linear automorphisms and, in doing so, being able to automatically learn the G-invariances that do not (significantly) contradict the data.
+\\
+
+\citeauthor{Mouli:2021} evaluated neural networks trained using their proposed learning framework on various image tasks and array tasks. Their results broadly suggest that
+\begin{enumerate}
+
+\item
+standard neural networks do well when interpolating but not when extrapolating,
+
+\item
+neural networks trained with forced G-invariances do poorly when interpolating but do well when extrapolating, and
+
+\item
+neural networks trained with their learning framework generally do well when interpolating and when extrapolating.
+
+\end{enumerate}
+
  
 \subsection{Limitations}
 
-\todo
-limitation: known groups
+The main limitations of the learning framework proposed by \textcite{Mouli:2021} originate from the assumptions made. To allow for single-environment data, the framework requires that the invariance groups acting on the data are known and specified. Furthermore, to enable automatic learning of invariances that do not contradict the training data, the groups are also restricted to be linear automorphisms. This framework cannot be used if no linear group structure could placed on the transformations that act on the data.
+\\
+
+These limitations naturally point to directions for future work where non-linear groups or even non-groups of transformations are considered. It is also worth investigating if a method for single-environment extrapolation that does not require known groups is possible.
 
 
 \newpage

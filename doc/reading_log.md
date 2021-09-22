@@ -18,3 +18,8 @@
 	* Invariance strength is defined in terms of the number of groups.
 
 * Empirical results on image and sequence data generally show that (1) standard neural networks do well when interpolating but fail when extrapolating, (2) neural networks with forced G-invariance (assumed G-invariance that contradicts the training data) do poorly when interpolating but do well when extrapolating, and (3) CG-regularized neural networks do well when interpolating and when extrapolating.
+
+# 2021-09-21
+## Mouli, 2021
+
+* Appendix B.1 (generating sequence of transformations): where does the interleaving process come from? References for known group theory result?
