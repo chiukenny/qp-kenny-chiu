@@ -23,3 +23,18 @@
 ## Mouli, 2021
 
 * Appendix B.1 (generating sequence of transformations): where does the interleaving process come from? References for known group theory result?
+
+# 2021-09-22
+## Mouli, 2021
+
+* For all sets M in power set of indices:
+
+    1. Compute intersection of 1-eigenspace.
+	
+	2. Direct sum 1-eigenspaces of supersets.
+	
+	3. Remove projection of (1) onto (2) from (1) to get the invariant subspace for set M.
+	
+* For each invariant subspace, any vector in subspace can be expressed as a linear combination of an orthogonal basis. Let the coefficients of the linear combination for each subspace be the learnable parameters of a neural network, collected in a matrix where rows correspond to subspaces and columns correspond to a particular neuron. A subspace is used in a neuron if the corresponding coefficient is not 0.
+
+* Let optimization objective consist of a loss term and a regularization term. Regularization term consists of two parts: (1) the number of sets M that are invariant to more groups than the least invariant subspace used by any neuron (encourages using subspaces that are invariant to more groups), and (2) the number of subspaces that are used and have the same level of invariance as the least invariant subspace used by any neuron (what does this encourage? "The larger the second term, farther away the optimization is from increasing the least level of invariance...").

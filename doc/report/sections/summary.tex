@@ -4,7 +4,7 @@
 
 \section{Conceptual summary}
 
-The paper by \textcite{Mouli:2021} examines the problem of extrapolating patterns learned from training data collected from a single environment to data collected from other environments. This problem context falls under the idea of \textit{domain adaptation} that has been explored in recent literature \parencite{Farahani:2020}. However, a key assumption in \citeauthor{Mouli:2021}'s work that distinguishes it from previous work in the literature is that the training data come from a single environment as opposed to multiple environments. Several previously proposed methods for domain adaptation---such as \textit{Invariant Risk Minimization} \parencite{Arjovsky:2020} (IRM)---rely on training data from multiple environments and therefore would fail under this problem context. \citeauthor{Mouli:2021} take a different approach by viewing extrapolation as counterfactual reasoning in a specified structural causal model (SCM) and assuming known (linear automorphism) group structures on the non-causal mechanisms. Under this formulation, \citeauthor{Mouli:2021} introduce a learning framework for the single-environment context that is able to learn invariances that do not contradict the data. In this conceptual summary, we review the key contributions of the paper by \textcite{Mouli:2021} and discuss the strengths and weaknesses of their approach.
+The paper by \textcite{Mouli:2021} examines the supervised problem of extrapolating patterns learned from training data collected from a single environment to data collected from other environments. This problem context falls under the idea of \textit{domain adaptation} that has been explored in recent literature \parencite{Farahani:2020}. However, a key assumption in \citeauthor{Mouli:2021}'s work that distinguishes it from previous work in the literature is that the training data come from a single environment as opposed to multiple environments. Several previously proposed methods for domain adaptation---such as \textit{Invariant Risk Minimization} \parencite{Arjovsky:2020} (IRM)---rely on training data from multiple environments and therefore would fail under this problem context. \citeauthor{Mouli:2021} take a different approach by viewing extrapolation as counterfactual reasoning in a specified structural causal model (SCM) and assuming known (linear automorphism) group structures on the non-causal mechanisms. Under this formulation, \citeauthor{Mouli:2021} introduce a learning framework for the single-environment context that is able to learn invariances that do not contradict the data. In this conceptual summary, we review the key contributions of the paper by \textcite{Mouli:2021} and discuss the strengths and weaknesses of their approach.
 
 
 \subsection{Key differences from previous work}
@@ -56,3 +56,31 @@ These limitations naturally point to directions for future work where non-linear
 
 
 \section{Technical summary}
+
+The technical components of the paper by \textcite{Mouli:2021} include the proposed learning framework and the theoretical results that justify its usage in the given setting. In this technical summary, we first summarize the formulation of the single-environment extrapolation problem before summarizing the learning framework and its related results.
+
+
+\subsection{Single-environment extrapolation setting}
+
+In the context of single-environment extrapolation described by \textcite{Mouli:2021}, the goal is to learn (in a supervised learning setup) a prediction model where the output  only depends on information that is relevant across different environments. The challenge is learning which information is relevant given only training data from a single environment. To simplfy this problem, \citeauthor{Mouli:2021} assume a known set of groups $\calG_1,\ldots,\calG_m$ of transformations acting on the data, and the objective is to learn an internal representation of the data that is invariant to an unknown subset of groups that is assumed to be irrelevant. \citeauthor{Mouli:2021} also works under an ICM setup where the SCM in Figure~\ref{fig:scm} is assumed.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{scm.png}
+\caption{Structural causal model assumed in single-environment extrapolation. Grey nodes are observed variables. Figure taken directly from \parencite{Mouli:2021}.}
+\label{fig:scm}
+\end{figure}
+
+The variables in the assumed SCM are defined as follows:
+\begin{itemize}
+
+\item
+$\calD$, $\calI$: (unknown) disjoint sets of indices that describe the groups of transformations that are relevant and irrelevant to the output, respectively. $\calD\cup\calI=\{1,\ldots,m\}$.
+
+\item
+$U_Y$, $U_\calI$, $U_\calD$: random latent variables that influence the value of the variable(s) that they point to.
+
+\end{itemize}
+
+
+\subsection{Learning framework for single-environment extrapolation}
