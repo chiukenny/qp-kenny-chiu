@@ -11,3 +11,7 @@
 * Started technical summary.
 
 * Started thinking about project proposals.
+
+## 2021-09-23
+
+* Finish formulation/notation section of technical summary and start analyses sections.
