@@ -4,7 +4,7 @@
 
 ## 2021-09-21
 
-* Update draft of conceptual summary.
+* Updated draft of conceptual summary.
 
 ## 2021-09-22
 
@@ -14,4 +14,8 @@
 
 ## 2021-09-23
 
-* Finish formulation/notation section of technical summary and start analyses sections.
+* Finished formulation/notation section of technical summary and start analyses sections.
+
+## 2021-09-25
+
+* Updated technical summary. Read proofs in more detail.
