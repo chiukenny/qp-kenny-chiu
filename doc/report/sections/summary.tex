@@ -110,7 +110,7 @@ Given the SCM, the goal is to learn a representation $\Gamma:\calX\rightarrow\bb
 \[
 \Gamma(X) = \Gamma(X_{U_\calI\leftarrow\tildeU_\calI})
 \]
-where the equality implies $\Gamma(X_{U_\calI\leftarrow u})=\Gamma(X_{U_\calI\leftarrow u'})$ for all $u\in\supp(U_\calI)$, $u'\in\supp(\tildeU_\calI)$. The representation $\Gamma$ is fed into a learned link function $g:\bbR^d\rightarrow \text{Im} P(Y=y|X)$, $\text{Im} P(\cdot)$ being the image of $P(\cdot)$, which produces the prediction of the model, i.e.,
+where the equality implies $\Gamma(X_{U_\calI\leftarrow u})=\Gamma(X_{U_\calI\leftarrow u'})$ for all $u\in\supp(U_\calI)$, $u'\in\supp(\tildeU_\calI)$. The representation $\Gamma$ is fed into a learned link function $g:\bbR^d\rightarrow \text{Im} P(Y=y|X)$, $\text{Im} P(\argdot)$ being the image of $P(\argdot)$, which produces the prediction of the model, i.e.,
 \[
 \hat{Y}|X \sim g(\Gamma(X)) \;.
 \]
@@ -136,7 +136,7 @@ Furthermore, \citeauthor{Mouli:2021} assume that the subset $\calG_\calI$ of gro
 \[
 T_\calI\circ X = T_\calI\circ T_{U_\calD,U_\calI\leftarrow u}\circ X^\text{(hid)} = T_{U_\calD,U_\calI\leftarrow\tilde{u}}\circ X^\text{(hid)}
 \]
-where $T_{U_\calD,\cdot}\in\calG_{\calD\cup\calI}$ and $u,\tilde{u}\in U_\calI$. The result then follows from the definitions of CG-invariance and G-invariance for a representation $\Gamma$. To show that not all G-invariances are CG-invariances, the counterexample in Figure~\ref{fig:counterexample} is given. The proof of Theorem~2 (G-invariance $\Rightarrow$ CG-invariance when $\calG_\calI\unlhd\calG_{\calD\cup\calI}$) uses the fact that under the required assumption, any $T_\calD\circ T_\calI \in\calG_{\calD\cup\calI}$ can be written as $T_\calD\circ T_\calI=T_\calI'\circ T_\calD$ where $T_\calI,T_\calI'\in\calG_\calI$, $T_\calD\in\calG_\calD$. Showing CG-invariance given any sequence of transformations $T\in\calG_{\calD\cup\calI}$ then reduces to repeatedly rewriting the sequence with a leading $T_\calI'$ that is then removed using the G-invariance of the representation $\Gamma$. CG-invariance is then shown after only transformations from $\calG_\calD$ remain in the sequence. 
+where $T_{U_\calD,\argdot}\in\calG_{\calD\cup\calI}$ and $u,\tilde{u}\in U_\calI$. The result then follows from the definitions of CG-invariance and G-invariance for a representation $\Gamma$. To show that not all G-invariances are CG-invariances, the counterexample in Figure~\ref{fig:counterexample} is given. The proof of Theorem~2 (G-invariance $\Rightarrow$ CG-invariance when $\calG_\calI\unlhd\calG_{\calD\cup\calI}$) uses the fact that under the required assumption, any $T_\calD\circ T_\calI \in\calG_{\calD\cup\calI}$ can be written as $T_\calD\circ T_\calI=T_\calI'\circ T_\calD$ where $T_\calI,T_\calI'\in\calG_\calI$, $T_\calD\in\calG_\calD$. Showing CG-invariance given any sequence of transformations $T\in\calG_{\calD\cup\calI}$ then reduces to repeatedly rewriting the sequence with a leading $T_\calI'$ that is then removed using the G-invariance of the representation $\Gamma$. CG-invariance is then shown after only transformations from $\calG_\calD$ remain in the sequence. 
 
 \begin{figure}[H]
 \centering
@@ -149,11 +149,37 @@ While a set of transformation groups are assumed a priori, it is not known which
 \[
 \bar{T} = \frac{1}{|\calG|}\sum_{T\in\calG}T
 \]
-is a G-invariant projection operator (Lemma~1). The invariant subspace for a group $\calG$ is then precisely the left eigenspace corresponding to eigenvalue 1 of the Reynolds operator (Lemma~2). To construct the invariant subspace for a set of groups (Theorem~3), the intersection of the 1-eigenspaces for the individual groups is taken. However, the intersection may contain vectors that are invariant to some overgroup, and so the group's projection onto the subspace of the overgroup is removed from the intersection. The subspace that remains describes the vectors that are invariant to transformations only from the set of groups that it was built from. (\todo proof) \citeauthor{Mouli:2021}'s learning framework relies heavily on being able to identify the invariant subspace for every subset of groups, to each of which it then associates a cost that encourages adopting the largest possible subset.
+is a G-invariant projection operator (Lemma~1). The invariant subspace for a group $\calG$ is then precisely the left eigenspace corresponding to eigenvalue 1 of the Reynolds operator (Lemma~2). To construct the invariant subspace for a set of groups indexed by a set $M$ (Theorem~3), the intersection of the 1-eigenspaces for the individual groups is taken. However, the intersection may also contain vectors that are invariant to some overgroup, and so the group's projection onto the subspace of the overgroup is removed from the intersection. The subspace $\calB_M$ that remains describes the vectors that are invariant to transformations only from the set of groups that it was built from. (\todo proof) \citeauthor{Mouli:2021}'s learning framework relies on being able to identify the invariant subspace for every subset of groups. Once the subspaces have been identified, a cost can be assigned to each subspace that encourages adopting the subspace invariant to the most number of groups.
 
 
 \subsection{Learning framework for single-environment extrapolation}
 
-\todo Under the setting described in the previous section, \textcite{Mouli:2021} propose a framework for learning the CG-invariant representation.
+Suppose that $\calG_1,\ldots,\calG_m$ are known linear automorphisms. Under the context and assumptions described in the previous sections, the framework proposed by \textcite{Mouli:2021} aims to learn a CG-invariant representation $\Gamma$ and a link function $g$ (both of which are neural networks). The representation $\Gamma$ is a neural network layer with $H\geq1$ neurons. The $h$-th neuron has the form
+\[
+\Gamma^{(h)}(x) = \sigma\left(x^T\left(\sum_{i=1}^B\bfB_{M_i}\bfom_{M_i,h}\right)+b_h\right)
+\]
+where $\sigma(\argdot)$ is a non-linear activation function, $b_h$ is a bias parameter, $\bfB_{M_i}$ is a matrix whose columns are the orthogonal basis of the invariant subspace $\calB_{M_i}$ built from the set of groups indexed by $M_i$, and $\bfom_{M_i,h}$ are the learnable parameters which correspond to the linear combination coefficients of the orthogonal basis. The parameters are collected in a neuron weight matrix
+\[
+\bfOm =
+\begin{bmatrix}
+\bfom_{M_1,1} & \ldots & \bfom_{M_1,H} \\
+\vdots & \ddots & \vdots \\
+\bfom_{M_B,1} & \ldots & \bfom_{M_B,H}
+\end{bmatrix}
+\]
+where $M_1,\ldots,M_B$, $B\leq \mathrm{dim}(\calX)$, are sets of indices corresponding to different subsets of groups. The optimization objective is then
+\[
+\hatOm,\hatb = \argmin_{\bfOm,\bfb}\sum_{(y^\text{(tr)},x^\text{(tr)})\in\calD^\text{(tr)}}\calL\left(y^\text{(tr)},g(\Gamma(x^\text{(tr)};\bfOm,\bfb))\right)+ \lambda R(\bfOm)
+\]
+where $\lambda>0$ is a regularization parameter, $R(\argdot)$ is the regularization penalty given by
+\[
+R(\bfOm) = \left|\{M_i:|M_i|>\ell, 1\leq i\leq B\}\right| + \sum_{i:|M_i|=\ell,1\leq i\leq B}\onevec\{\|\bfom_{M_i,\argdot}\|_2^2>0\}\;,
+\]
+and $\ell = \min\{|M_i|\cdot\onevec\{\|\bfom_{M_i,\argdot}\|_2^2>0\}: 1\leq i \leq B\}$. The number $\ell$ describes the smallest size across all sets of groups $M_i$ that are used by at least one neuron. The penalty $R(\argdot)$ then counts the number of sets that are larger or are equal in size to the smallest set. This objective encourages $\Gamma$ to use a subspace that is invariant to more groups. Note that while $R(\argdot)$ is discrete, a differentiable approximation is available for optimization.
+\\
 
-\todo performance exponential due to power set?
+To use the learning framework, the subspaces for the power set of groups must first be computed. While the procedure only needs to be run once for a particular set of groups, the runtime is technically exponential as the subspace needs to be computed for every set in the power set. The procedure can be set to terminate early once a subspace equal in size to the space of the input is found, and \citeauthor{Mouli:2021} comment that it is unclear if the worst-case runtime occurs in practice.
+
+\subsection{Analysis}
+
+\todo is this required in the summary?

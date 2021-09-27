@@ -19,3 +19,7 @@
 ## 2021-09-25
 
 * Updated technical summary. Read proofs in more detail.
+
+## 2021-09-26
+
+* Updated methodology in technical summary.
