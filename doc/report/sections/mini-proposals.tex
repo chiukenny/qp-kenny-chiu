@@ -19,25 +19,30 @@
 \begin{itemize}
 
 \item
-Any finite group is linear? What implications are there with infinite linear groups?
+What implications are there with infinite linear groups? Learning framework finds invariant subspace of group using properties (idempotency) of projection operator.
+\begin{itemize}
+\item
+Reynolds operator changes to integral over normalized Haar measure of (locally compact) group? 
+\item
+Provably Strict Generalisation Benefit for Invariance in Kernel Methods (Elesedy 2021). Lemma 3: RKHS decomposes into space of G-invariant functions and space of functions that vanish when averaged over an orbit. Both spaces are RKHS with different kernels.
+\item
+Relation to normal subgroups and quotient spaces?
+\end{itemize}
 
 \item
 If considering non-normal subgroups, then Theorem 2 does not hold. Have to work with CG-invariances rather than G-invariances? What exactly does this mean?
 
 \item
-Can something be down without assuming known groups? Consider largest possible linear overgroup and automatically learn the strongest invariances?
+Can the framework be adapted for some equivariant objective? i.e., learning equivariant groups rather than invariant groups.
 
 \item
 Framework breaks down with non-groups. Can a non-group approach work? Can non-group structures be specified/linear? Can a variant of Theorem 2 be derived?
 
 \item
-Learning framework finds invariant subspace of group using properties (idempotency) of projection operator. When not working in linear spaces, is there an analagous property of non-linear operators?
+Can something be down without assuming known groups? Consider largest possible linear overgroup and automatically learn the strongest invariances?
 
 \item
 Does the chosen regularizing term make sense? Is it optimal? Does its differentiable approximation affect these properties?
-
-\item
-Can the framework be adapted for some equivariant objective? i.e., learning equivariant groups rather than invariant groups.
 
 \item
 The proposed algorithm is exponential as it involves the power set. Can it be reduced? Appendix D: ``...the algorithm stops after finding all the basis for the space vec$(\calX)$, it is unclear if the worst-case runtime occurs in practice.''

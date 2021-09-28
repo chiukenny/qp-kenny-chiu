@@ -23,3 +23,7 @@
 ## 2021-09-26
 
 * Updated methodology in technical summary.
+
+## 2021-09-27
+
+* Met with Ben discussing paper and current report status.
