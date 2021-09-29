@@ -5,46 +5,62 @@
 \section{Mini-proposals}
 
 % each mini-proposal gets its own subsection
-\subsection{Proposal 1: MY PROPOSAL TITLE} % enter your proposal title
+\subsection{Proposal 1: Learning Counterfactual G-invariances from Single Environments with Continuous Linear Groups}
+
+\begin{itemize}
+
+\item
+Finite groups $\rightarrow$ continuous linear groups, e.g., rotations, with assumptions to guarantee existence of Haar measure (e.g., locally compact?)
+
+\item
+(Elesedy 2021) looks at a RKHS and decomposes it into a space of G-invariant functions and a space of functions that vanish when averaged over G.
+
+\item
+Reynolds operator is a functional(?) of a group:
+\[
+\bar{T}_\calG = \frac{1}{|\calG|}\sum_{T\in\calG}T
+\]
+Orbit-averaging operator is a functional(?) of a group and a function (the representation?):
+\[
+\calO_{\calG,x}(f) = \int_\calG f(gx)d\lambda(g)
+\]
+How are these related? $\calO$ is an orthogonal projection on RKHS. Does the eigenspace of $\calO$ play a similar role to the eigenspace of Reynolds operator?
+
+\item
+Assuming orbit-averaging replaces Reynolds operator, question is how to compute the 1-eigenspaces in practice (Reynolds operator can be computed for finite group, but averaging via Haar measure?).
+
+\item
+Results analogous to Lemma 1, 2 (1-eigenspace corresponds to invariant vectors) and Theorem 3 (subspaces for sets of groups) would be needed.
+
+\end{itemize}
 
 
 % each mini-proposal gets its own subsection
-\subsection{Proposal 2: MY OTHER PROPOSAL TITLE} % enter your proposal title
+\subsection{Proposal 2: Learning Counterfactual G-equivariances from Single Environments}
+
+\begin{itemize}
+
+\item
+Context: same as \parencite{Mouli:2021}, but equivariance rather than invariance is desirable (e.g., orientation of image).
+
+\item
+Idea: 0-eigenspace corresponds to equivariant aspect of group. Transform input to group representation (basis?), feed into invariant representation, re-apply transformation to obtain equivariant output.
+
+\item
+Questions: how to handle multiple groups? Input and output spaces potentially different, need to learn input transformation and output transformation separately?
+
+\item
+The intersection of 0-eigenspace for group $i$ and 1-eigenspace for groups $j\neq i$ (and remove orthogonal projection onto overgroups?) correspond to space of vectors that are invariant to actions of groups $j$ but not group $i$. For a set of groups of size $k$, we end up with $k$ different subspaces? Or intersect with 1-eigenspace of all other groups to only get 1 subspace for set?
+
+\item
+Input transformation: just use projection on 1-eigenspace and feed into invariant representation.
+
+\item
+?Output transformation: want to use projection on 0-eigenspace (intersected with other 1-eigenspaces), but representation is on different space than input? Can this output transformation be learned using the same framework? Or just have two separate input network components that each take one of projection onto 0/1-eigenspace and sum the outputs/feed both into link function?
+
+\end{itemize}
 
 % ...
 
 
 % TODO
-\parencite{Mouli:2021} requires specifying known linear groups of transformations.
-\begin{itemize}
-
-\item
-What implications are there with infinite linear groups? Learning framework finds invariant subspace of group using properties (idempotency) of projection operator.
-\begin{itemize}
-\item
-Reynolds operator changes to integral over normalized Haar measure of (locally compact) group? 
-\item
-Provably Strict Generalisation Benefit for Invariance in Kernel Methods (Elesedy 2021). Lemma 3: RKHS decomposes into space of G-invariant functions and space of functions that vanish when averaged over an orbit. Both spaces are RKHS with different kernels.
-\item
-Relation to normal subgroups and quotient spaces?
-\end{itemize}
-
-\item
-If considering non-normal subgroups, then Theorem 2 does not hold. Have to work with CG-invariances rather than G-invariances? What exactly does this mean?
-
-\item
-Can the framework be adapted for some equivariant objective? i.e., learning equivariant groups rather than invariant groups.
-
-\item
-Framework breaks down with non-groups. Can a non-group approach work? Can non-group structures be specified/linear? Can a variant of Theorem 2 be derived?
-
-\item
-Can something be down without assuming known groups? Consider largest possible linear overgroup and automatically learn the strongest invariances?
-
-\item
-Does the chosen regularizing term make sense? Is it optimal? Does its differentiable approximation affect these properties?
-
-\item
-The proposed algorithm is exponential as it involves the power set. Can it be reduced? Appendix D: ``...the algorithm stops after finding all the basis for the space vec$(\calX)$, it is unclear if the worst-case runtime occurs in practice.''
-
-\end{itemize}

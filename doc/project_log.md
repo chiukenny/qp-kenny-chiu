@@ -9,7 +9,6 @@
 ## 2021-09-22
 
 * Started technical summary.
-
 * Started thinking about project proposals.
 
 ## 2021-09-23
@@ -27,3 +26,8 @@
 ## 2021-09-27
 
 * Met with Ben discussing paper and current report status.
+
+## 2021-09-28
+
+* Added proposal ideas.
+* Cleaned up conceptual summary.
