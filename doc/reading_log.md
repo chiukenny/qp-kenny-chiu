@@ -44,3 +44,12 @@
 
 * Group with Haar measure acting on input space. Given a function, the function can be made invariant by averaging over the Haar measure.
 * Lemma 3: RKHS decomposes into space of G-invariant functions and space of functions that vanish when averaged over the Haar measure.
+
+# 2021-09-30
+## Elesedy & Zaidi, 2021
+
+* Introduce generalization gap for quantifying benefits of invariance. Previous work focus on worst-case performance and don't show provably non-zero benefits.
+
+## Steinwart, 2008
+
+* For kernel and RKHS background.
