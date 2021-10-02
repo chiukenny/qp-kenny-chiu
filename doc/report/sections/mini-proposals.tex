@@ -5,9 +5,78 @@
 \section{Mini-proposals}
 
 % each mini-proposal gets its own subsection
-\subsection{Proposal 1: Learning Counterfactual G-invariances from Single Environments with Continuous Linear Groups}
+\subsection{Proposal 1: Learning Counterfactual G-invariances from Single Environments via Kernel Regression}
 
-Consider kernels(?) for potential infinite dimensional feature space. Allow for compact groups with linear representation. To compute eigenspace for set of groups, sample from Haar measure uniformly to estimate operator. Kernel/function with causal context?
+The domain adaptation learning framework proposed by \textcite{Mouli:2021} can be restrictive in that the specified groups are required to be finite. Furthermore, neural networks, while powerful for prediction, can also be challenging to work with if interpretability is desirable or if there is available domain-knowledge to incorporate. We propose an adaptation to their learning framework based on kernel regression that addresses these (and potentially other) restrictions. Such a framework would also have additional benefits gained from using kernels, such as being able to use specially-designed kernels and access to a potentially infinite-dimensional feature space.
+\\
+
+Our proposed adaptation has the same goal of \citeauthor{Mouli:2021}'s framework, which is to be able to extrapolate a model trained on single-environment data to different environments by learning invariances to a subset of given groups that describe non-causal information. The SCM setup and assumptions in our proposed adaptation would mostly be identical to that of the original framework. However, unlike the original framework, we allow for continuous groups $\calG_1,\ldots,\calG_m$ at the expense of restricting the output space $\calY=\bbR$. We also assume that the groups are compact to ensure the existence of Haar measures $\lambda_1,\ldots,\lambda_m$. We retain the assumption that the non-causal subset of groups $\calG_\calI$ is a normal subgroup of the overgroup $\calG_{\calD\cup\calI}$ so that Theorem 2 of \parencite{Mouli:2021} allows us to work directly with G-invariances rather than CG-invariances.
+\\
+
+The main difference between the original framework and our adaptation is the model itself. While \citeauthor{Mouli:2021} propose to learn the invariances by encoding their respective invariant eigenspaces into neuron weights in a neural network layer, we propose to encode invariances as distinct invariant kernels in a multiple kernel regression. Learning the invariances then corresponds to learning the weights of the kernels in the model. The optimization objective in the adaptation would likely still involve a regularization term that encourages a greater weight on the strongest invariances that do not contradict the training data.
+\\
+
+The main tasks of this proposed project would include the following:
+\begin{enumerate}
+
+\item
+Show how to construct a kernel that is invariant to a specific set of groups. It is well-known that for a given function $f$ and a group $\calG$, averaging the function over the Haar measure $\lambda$ of the group produces the $\calG$-invariant function
+\[
+\bar{f}(x) = \int_\calG f(gx)\mathrm{d}\lambda(g)\;.
+\]
+However, given a set of groups $\calG_\calI$ where $\calI\subset\{1,\ldots,m\}$, it may not be obvious how to construct a function that is invariant to only transformations $g\in\calG_\calI$ and not $g'\in\calG_{\supset\calI}$ where $\calI$ is a strict subset of $\supset\!\calI$. \textcite{Mouli:2021} deal with this problem in the context of finite linear groups by computing the intersection of the invariant eigenspaces for the groups in a set and removing their projection onto invariant eigenspaces for overgroups (Theorem~3). We expect that a kernel invariant to a specific set of groups may be constructed (or at least described) by drawing on summation properties of reproducing kernel Hilbert spaces (RKHS) as well as RKHS decomposition results from \parencite{Elesedy:2021} (Lemmas~3 and 4 in particular). The goal would be to provide theoretical results analogous to Lemma~2 and Theorem~3 of \parencite{Mouli:2021}.
+
+\item
+If (1) is not possible or requires unreasonable assumptions, then identify the key obstacles that prevent the construction of such a kernel.
+
+\item
+Formulate a kernel-based version of the framework by \citeauthor{Mouli:2021}. The main technical considerations would be computing the invariant kernels needed (which depends on the feasibility of (1)) and adapting the regularization term in the optimization objective to work with kernel weights rather than neuron weights.
+
+\end{enumerate}
+
+If the tasks described above are completed successfully, the expected contributions of this project would be as follows:
+
+\begin{enumerate}
+
+\item
+Further development of invariant kernel theory. Formal theory regarding the construction of a kernel that is invariant to exactly a specific set of groups does not seem to have been explored in existing literature and is an interesting idea in its own right.
+
+\item
+A CG-invariance learning framework for single-environment domain adaptation based on kernels that works with (possibly non-linear) continuous groups. In addition to being a potentially useful method, understanding whether other methods aside from the one proposed by \citeauthor{Mouli:2021} are feasible is crucial for drawing attention to the relatively new single-environment domain adaptation literature.
+
+\item
+Empirical results that evaluate how the adapted framework compares to standard domain adaptation methods and the one proposed by \citeauthor{Mouli:2021}.
+
+\end{enumerate}
+
+\iffalse
+\begin{itemize}
+
+\item
+Setting: $\calY=\bbR$, $\calG_1,\ldots,\calG_m$ compact with Haar measures $\lambda_1,\ldots,\lambda_m$, $\calG_\calI\trianglelefteq\calG_{\calD\cup\calI}$
+
+\item
+Idea: adapt original algorithm to use kernel regression rather than neural networks. Instead of finding bases of eigenspaces and learning the coefficients to learn invariances, do multiple kernel regression where the kernels are invariant to actions of subsets of groups and learn the invariances by learning the weights
+
+\item
+Contributions if successful: development of invariant kernel theory (constructing kernels invariant to a specific set of groups and no more), CG-invariance learning framework that allows for potentially infinite dimensional feature space and (possibly non-linear) continuous groups
+
+\item
+Main tasks:
+\begin{enumerate}
+\item
+Show how to construct kernels that are invariant to multiple groups and not invariant to overgroups (if possible)
+\item
+Formalize theory under which construction holds (analogous to Lemmas 1, 2 and Theorem 3 for original paper) or why not possible
+\item
+Introduce kernel-version of framework and adapt optimization objective for kernel regression (if 1 and 2 successful)
+\end{enumerate}
+
+\end{itemize}
+\fi
+
+\iffalse
+\subsection{Proposal 1: Learning Counterfactual G-invariances from Single Environments with Continuous Linear Groups}
 
 \begin{itemize}
 
@@ -61,6 +130,7 @@ Input transformation: just use projection on 1-eigenspace and feed into invarian
 ?Output transformation: want to use projection on 0-eigenspace (intersected with other 1-eigenspaces), but representation is on different space than input? Can this output transformation be learned using the same framework? Or just have two separate input network components that each take one of projection onto 0/1-eigenspace and sum the outputs/feed both into link function?
 
 \end{itemize}
+\fi
 
 % ...
 

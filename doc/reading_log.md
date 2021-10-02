@@ -53,3 +53,13 @@
 ## Steinwart, 2008
 
 * For kernel and RKHS background.
+
+# 2021-10-01
+
+* Save for later:
+
+    * Gonen (2011): [Multiple Kernel Learning Algorithms](https://jmlr.csail.mit.edu/papers/volume12/gonen11a/gonen11a.pdf)
+    * Ma (2019): [Learning Invariant Representations with Kernel Warping](http://proceedings.mlr.press/v89/ma19a.html)
+	* Ghiasi-Shirazi (2010): [Learning Translation Invariant Kernels for Classification](https://www.jmlr.org/papers/volume11/ghiasi-shirazi10a/ghiasi-shirazi10a.pdf)
+	* Walder (2007): [Learning with Transformation Invariant Kernels](https://papers.nips.cc/paper/2007/hash/c0e190d8267e36708f955d7ab048990d-Abstract.html)
+	* Gong (2012): [Geodesic flow kernel for unsupervised domain adaptation](https://ieeexplore.ieee.org/document/6247911), [slides](http://adas.cvc.uab.es/task-cv2014/wp-content/uploads/2014/10/Gong_talk.pdf)
