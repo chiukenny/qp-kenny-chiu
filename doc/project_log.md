@@ -31,3 +31,16 @@
 
 * Added proposal ideas.
 * Cleaned up conceptual summary.
+
+## 2021-09-29
+
+* Met with Ben to discuss proposals.
+
+## 2021-10-01
+
+* Wrote draft of proposal 1 (learning CG-invariances from single-environment data via MKL).
+
+## 2021-10-02
+
+* Updated proposal 1.
+* Cleaned up conceptual summary again.

@@ -5,15 +5,19 @@
 \section{Mini-proposals}
 
 % each mini-proposal gets its own subsection
-\subsection{Proposal 1: Learning Counterfactual G-invariances from Single Environments via Kernel Regression}
+\subsection{Proposal 1: Learning Counterfactual G-invariances from Single Environments via Multiple Kernel Learning}
 
-The domain adaptation learning framework proposed by \textcite{Mouli:2021} can be restrictive in that the specified groups are required to be finite. Furthermore, neural networks, while powerful for prediction, can also be challenging to work with if interpretability is desirable or if there is available domain-knowledge to incorporate. We propose an adaptation to their learning framework based on kernel regression that addresses these (and potentially other) restrictions. Such a framework would also have additional benefits gained from using kernels, such as being able to use specially-designed kernels and access to a potentially infinite-dimensional feature space.
+The domain adaptation learning framework proposed by \textcite{Mouli:2021} can be restrictive in that the specified groups are required to be finite. Furthermore, neural networks, while powerful for prediction, can also be challenging to work with if interpretability is desirable or if there is available domain-knowledge to incorporate. We propose an adaptation to their framework based on multiple kernel learning \parencite{Gonen:2011} that addresses these (and potentially other) restrictions. Such a framework would also have access to the additional benefits that kernels may have to offer, such as being able to use specially-designed kernels and a potentially infinite-dimensional feature space. We note that the details described in this proposal were considered as part of the conceptual planning for the project and may be subject to change.
 \\
 
-Our proposed adaptation has the same goal of \citeauthor{Mouli:2021}'s framework, which is to be able to extrapolate a model trained on single-environment data to different environments by learning invariances to a subset of given groups that describe non-causal information. The SCM setup and assumptions in our proposed adaptation would mostly be identical to that of the original framework. However, unlike the original framework, we allow for continuous groups $\calG_1,\ldots,\calG_m$ at the expense of restricting the output space $\calY=\bbR$. We also assume that the groups are compact to ensure the existence of Haar measures $\lambda_1,\ldots,\lambda_m$. We retain the assumption that the non-causal subset of groups $\calG_\calI$ is a normal subgroup of the overgroup $\calG_{\calD\cup\calI}$ so that Theorem 2 of \parencite{Mouli:2021} allows us to work directly with G-invariances rather than CG-invariances.
+Our proposed adaptation has the same goal as \citeauthor{Mouli:2021}'s framework, which is to be able to extrapolate a model trained on single-environment data to different environments by learning invariances for a subset of given groups that describe non-causal information. The SCM setup and assumptions in our proposed adaptation is mostly identical to that of the original framework. However, unlike the original framework, we allow for continuous groups $\calG_1,\ldots,\calG_m$ at the expense of restricting the output space $\calY=\bbR$. We also assume that the groups are compact to ensure the existence of Haar measures $\lambda_1,\ldots,\lambda_m$. We retain the assumption that the non-causal subset of groups $\calG_\calI$ is a normal subgroup of the overgroup $\calG_{\calD\cup\calI}$ to take advantage of Theorem~2 in \parencite{Mouli:2021}, which allows us to work directly with G-invariances rather than CG-invariances.
 \\
 
-The main difference between the original framework and our adaptation is the model itself. While \citeauthor{Mouli:2021} propose to learn the invariances by encoding their respective invariant eigenspaces into neuron weights in a neural network layer, we propose to encode invariances as distinct invariant kernels in a multiple kernel regression. Learning the invariances then corresponds to learning the weights of the kernels in the model. The optimization objective in the adaptation would likely still involve a regularization term that encourages a greater weight on the strongest invariances that do not contradict the training data.
+The main difference between the original framework and our proposed adaptation is the model itself. While \textcite{Mouli:2021} propose to learn the invariances by encoding their respective invariant eigenspaces into neuron weights in a neural network layer, we propose to encode invariances as distinct invariant kernels in a prediction function that takes the form
+\[
+f(x) = \alpha_0 + \sum_{j=1}^p\alpha_j\sum_{i=1}^n\beta_i\bar{k}_j(x,x_i)
+\]
+where $p\approx 2^m$, $\bar{k}_j$ are kernels constructed to be invariant to different subsets of groups, $\beta_i$ are learned weights on the training data $x_i$, and $\alpha_j$ are learned weights on the kernels. Learning the invariances then corresponds to learning the weights $\alpha$ of the kernels in the model. The optimization objective in the adaptation still uses a regularization term that encourages a greater weight on the strongest invariances that do not contradict the training data.
 \\
 
 The main tasks of this proposed project would include the following:
@@ -30,11 +34,14 @@ However, given a set of groups $\calG_\calI$ where $\calI\subset\{1,\ldots,m\}$,
 If (1) is not possible or requires unreasonable assumptions, then identify the key obstacles that prevent the construction of such a kernel.
 
 \item
-Formulate a kernel-based version of the framework by \citeauthor{Mouli:2021}. The main technical considerations would be computing the invariant kernels needed (which depends on the feasibility of (1)) and adapting the regularization term in the optimization objective to work with kernel weights rather than neuron weights.
+Formulate a kernel-based version of the framework by \citeauthor{Mouli:2021}. The main technical considerations would be computing the invariant kernels needed (which depends on the feasibility of (1)), adapting the regularization term in the optimization objective to work with kernel weights rather than neuron weights, and designing a feasible algorithm for learning the weights.
+
+\item
+Determine the tractability of learning and using a model of the form given above. The value $p$ in the above function is the number of subsets in the power set of the groups, and $n$ is the number of training examples. This implies that just using the given model is of order $O(2^mn)$. The algorithm used by \textcite{Mouli:2021} is also exponential, but early termination conditions are included and so it is unclear how rarely the worst-case runtime occurs in practice. It remains to be seen whether similar strategies can be applied for our proposed model (e.g., excluding kernels for low-order subsets).
 
 \end{enumerate}
 
-If the tasks described above are completed successfully, the expected contributions of this project would be as follows:
+If the tasks described above are completed successfully, the expected major contributions of this project would be as follows:
 
 \begin{enumerate}
 
@@ -42,7 +49,7 @@ If the tasks described above are completed successfully, the expected contributi
 Further development of invariant kernel theory. Formal theory regarding the construction of a kernel that is invariant to exactly a specific set of groups does not seem to have been explored in existing literature and is an interesting idea in its own right.
 
 \item
-A CG-invariance learning framework for single-environment domain adaptation based on kernels that works with (possibly non-linear) continuous groups. In addition to being a potentially useful method, understanding whether other methods aside from the one proposed by \citeauthor{Mouli:2021} are feasible is crucial for drawing attention to the relatively new single-environment domain adaptation literature.
+A CG-invariance learning framework for single-environment domain adaptation based on kernels that works with (possibly non-linear) continuous groups. In addition to being a potentially useful method, understanding whether other methods aside from the one proposed by \citeauthor{Mouli:2021} are feasible is critical for drawing attention to the relatively new single-environment domain adaptation literature.
 
 \item
 Empirical results that evaluate how the adapted framework compares to standard domain adaptation methods and the one proposed by \citeauthor{Mouli:2021}.
