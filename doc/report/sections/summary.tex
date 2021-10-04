@@ -2,7 +2,7 @@
 
 % Summary section
 
-\section{Conceptual summary}
+\section{Conceptual summary}\label{sec:conceptual}
 
 The paper by \textcite{Mouli:2021} examines the problem of extrapolating patterns learned from single-environment training data in a supervised setting to data from other environments. This problem context falls under the topic of \textit{domain adaptation} that has been explored in recent literature \parencite{Farahani:2020}. However, a key assumption in \citeauthor{Mouli:2021}'s work that distinguishes it from much of the previous work in the literature is that the training data come from a single environment as opposed to multiple environments. Several previously proposed methods for domain adaptation---such as \textit{Invariant Risk Minimization} \parencite{Arjovsky:2020} (IRM)---rely on training data from multiple environments and therefore would fail under this problem context. \citeauthor{Mouli:2021} take a different approach by viewing extrapolation as counterfactual reasoning in a specified structural causal model (SCM) and assuming that potential differences between environments can be described in terms of known linear transformation groups acting on the data. Under this formulation, \citeauthor{Mouli:2021} introduce a neural network learning framework for the single-environment problem that is able to learn the group invariances that do not contradict the data. In this conceptual summary, we discuss how the context and work of \textcite{Mouli:2021} differ from previous work in the literature, review the key contributions of their work, and highlight the limitations of their approach.
 
@@ -53,44 +53,50 @@ Based on these conclusions, there appears to be merit in their proposed framewor
 The main limitations of the framework proposed by \textcite{Mouli:2021} are the very specific assumptions required for the framework to work. To allow extrapolation of the model trained on single-environment data to different environments, the framework requires that the invariance groups acting on the data are known. Furthermore, to enable automatic learning of invariances that do not contradict the training data, the groups are restricted to be finite linear automorphisms. These restrictions imply that invariance groups that were not initially specified are unable to be learned. The framework also cannot be used if the differences between environments could not be expressed in terms of linear transformation groups that act on the data. These limitations naturally point to future work in the form of an extended framework that allows one or more of these assumptions to be violated.
 
 
+
 \newpage
+
 
 
 \section{Technical summary}
 
-The main technical components of the paper by \textcite{Mouli:2021} include the proposed neural network learning framework and the theoretical results that justify its usage in the given setting. In this technical summary, we introduce the formulation and notation of the single-environment extrapolation problem, discuss the assumptions made under the formulation, and explain how the proposed learning framework is used with a neural network.
+The main technical aspects of the paper by \textcite{Mouli:2021} include the proposed neural network learning framework and the theoretical results that justify its usage in the described problem setting. In this technical summary, we introduce the formulation and notation of the single-environment extrapolation problem, discuss the assumptions that are made and why, and explain how the proposed learning framework is used with a neural network.
+\\
+
+Note that the definitions of terms and acroynyms used in this technical summary are defined in the conceptual summary in Section~\ref{sec:conceptual}.
 
 
 \subsection{Single-environment extrapolation setting}
 
-In the context of single-environment extrapolation described by \textcite{Mouli:2021}, the goal is to learn (in a supervised learning setup) a prediction model where the output  only depends on information that is relevant across different environments. The challenge is learning which information is relevant given only training data from a single environment. To simplfy this problem, \citeauthor{Mouli:2021} assume a known set of groups $\calG_1,\ldots,\calG_m$ of linear transformations acting on the data, and the objective is to learn an internal representation of the data that is invariant to an unknown subset of groups assumed to be irrelevant to the output. \citeauthor{Mouli:2021} works under an ICM setup where the SCM in Figure~\ref{fig:scm} is assumed.
+In the setting of single-environment extrapolation described by \textcite{Mouli:2021}, the goal is to train a prediction model (under a supervised learning setup) that is able to perform well (i.e., extrapolate) across different environments when given only data from a single environment at training time. It is assumed that input data include causal and non-causal variables in relation to the output, and that environments differ only in the non-causal variables. In theory, the model should be able to extrapolate if it depends only on the causal variables. The challenge is then learning which information is causal and which is not given only training data from a single environment. To simplfy the problem, \citeauthor{Mouli:2021} assume that differences in the data can be described by a given set of finite linear transformation groups $\calG_1,\ldots,\calG_m$ acting on the data. The objective is then to determine which of these groups correspond to non-causal information and to learn an internal representation of the data that is invariant to these non-causal groups.
+\\
 
+\citeauthor{Mouli:2021}'s formulation of the problem borrows from the ICM literature \parencite{Parascandolo:2018} where the SCM in Figure~\ref{fig:scm} is assumed.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.4\textwidth]{scm.png}
-\caption{Structural causal model assumed in single-environment extrapolation. Grey nodes are observed variables. Figure taken from \parencite{Mouli:2021}.}
+\caption{Assumed SCM in single-environment extrapolation. Grey nodes are observed variables. Arrows denote deterministic causal relationships where the target is dependent on the source. Figure from \parencite{Mouli:2021}.}
 \label{fig:scm}
 \end{figure}
-
-The variables in the assumed SCM are defined as follows:
+\noindent The variables in the SCM in Figure~\ref{fig:scm} are defined as follows:
 \begin{itemize}
 
 \item
-$\calD$, $\calI$: (unknown) disjoint sets of indices that describe the groups of transformations that are relevant and irrelevant to the output, respectively. $\calD\cup\calI=\{1,\ldots,m\}$.
+$\calD$, $\calI$: unknown disjoint sets of indices that refer to the sets of transformation groups that are relevant and irrelevant to the output, respectively. $\calD\cup\calI=\{1,\ldots,m\}$.
 
 \item
-$U_Y$, $U_\calI$, $U_\calD$, $\tildeU_\calI$: independent latent variables that influence the value of the variable(s) that they point to.
+$U_Y$, $U_\calI$, $U_\calD$, $\tildeU_\calI$: independent latent variables that model the stochastic components in the SCM. $U_\calI$ and $U_\calD$ in particular represent the collective randomness in their respective set of groups.
 
 \item
-$X^{\text{(hid)}}$: some unknown canonical form of the observed input $X$.  It is assumed that given $U_\calD$ and $U_\calI$, $X$ was obtained from an ordered sequence of transformations on the canonical form, i.e.,
+$X^{\text{(hid)}}$: unknown canonical form of the observed input $X\in\calX$.  It is assumed that given $U_\calD$ and $U_\calI$, $X$ was obtained from an ordered sequence of transformations $T_{U_\calD,U_\calI}$ applied to the canonical form, i.e.,
 \[
-X=T_{U_\calD,U_\calI}\circ X^{\text{(hid)}}
+X=T_{U_\calD,U_\calI}\circ X^{\text{(hid)}}\;.
 \]
-where transformations
+The overgroup $\calG_{\calD\cup\calI}$ consists of transformations of the form
 \[
 T_{U_\calD,U_\calI}=T_\calI^{(1)}\circ T_\calD^{(1)}\circ T_\calI^{(2)}\circ\ldots
 \]
-make up the overgroup $\calG_{\calD\cup\calI}$, $T_\calD^{(j)}$ is a transformation in group $\calG_j$ from the overgroup $\calG_\calD=\langle\cup_{j\in\calD}\calG_j\rangle$, and $T_\calI^{(i)}\in\calG_i\subset\calG_\calI=\langle\cup_{i\in\calI}\calG_i\rangle$. Note that $\calG_\calI$ is also assumed to be a normal subgroup of $\calG_{\calD\cup\calI}$.
+where $T_\calD^{(j)}$ is a transformation in group $\calG_j$ from the overgroup $\calG_\calD=\langle\cup_{j\in\calD}\calG_j\rangle$, and similarly $T_\calI^{(i)}\in\calG_i\subset\calG_\calI=\langle\cup_{i\in\calI}\calG_i\rangle$. Note that \citeauthor{Mouli:2021} also assume that $\calG_\calI$ is a normal subgroup of $\calG_{\calD\cup\calI}$ (denoted $\calG_\calI\trianglelefteq\calG_{\calD\cup\calI}$).
 
 \item
 $Y$: observed output assumed to be generated by
@@ -111,7 +117,7 @@ Given the SCM, the goal is to learn a representation $\Gamma:\calX\rightarrow\bb
 \[
 \Gamma(X) = \Gamma(X_{U_\calI\leftarrow\tildeU_\calI})
 \]
-where the equality implies $\Gamma(X_{U_\calI\leftarrow u})=\Gamma(X_{U_\calI\leftarrow u'})$ for all $u\in\supp(U_\calI)$, $u'\in\supp(\tildeU_\calI)$. The representation $\Gamma$ is fed into a learned link function $g:\bbR^d\rightarrow \text{Im} P(Y=y|X)$, $\text{Im} P(\argdot)$ being the image of $P(\argdot)$, which produces the prediction of the model, i.e.,
+where the equality implies $\Gamma(X_{U_\calI\leftarrow u})=\Gamma(X_{U_\calI\leftarrow u'})$ for all $u\in\supp(U_\calI)$, $u'\in\supp(\tildeU_\calI)$. The learned representation $\Gamma$ is fed into a learned link function $g:\bbR^d\rightarrow \text{Im} P(Y=y|X)$, $\text{Im} P(\argdot)$ being the image of $P(\argdot)$, which produces the prediction of the model, i.e.,
 \[
 \hat{Y}|X \sim g(\Gamma(X)) \;.
 \]
@@ -127,30 +133,57 @@ Y|X^\text{(te)} \equdist \hat{Y}|X^\text{(te)}\sim g_{\text{true}}(\Gamma_{\text
 
 \subsection{Assumptions in single-environment extrapolation}
 
-\textcite{Mouli:2021} make a number of assumptions in the setup described in the previous section in order to simplify the extrapolation problem and to allow for a feasible learning framework. Compared to previous work in the literature, the unconventional assumptions involve the transformation groups acting on the data.
+\textcite{Mouli:2021} make a number of assumptions in the setup described in the previous section in order to simplify the extrapolation problem and to allow for a feasible learning framework. The main assumptions that distinguish the current work from previous work in the literature are the ones revolving around the groups acting on the data.
 \\
 
-Unlike previous work that assumes the availability of training data from multiple environments, the problem context considered by \citeauthor{Mouli:2021} specifically considers data from a single environment. Without additional information that suggests how data from different environments may differ, it is likely impossible to learn what pieces of information are environment-specific and irrelevant to the output. \citeauthor{Mouli:2021} get around this issue by assuming a priori knowledge of how environments may differ in the form of transformation groups. The assumed groups specify the potential ways data from different environments may differ, and it is left to the learning framework to ``unlearn'' the groups that contradict the training data.
+Unlike previous work that assumes the availability of training data from multiple environments, the problem setting considered by \citeauthor{Mouli:2021} specifically considers data from a single environment. Without additional information that suggests how data from different environments may differ, it is difficult to learn which pieces of information are environment-specific and irrelevant to the output. \citeauthor{Mouli:2021} deal with this issue by assuming a priori knowledge of how environments may differ in the form of transformation groups. The assumed groups specify the potential ways data from different environments may differ, and it is left to the learning framework to ``unlearn'' the groups that contradict the training data.
 \\
 
-Furthermore, \citeauthor{Mouli:2021} assume that the subset $\calG_\calI$ of groups is a normal subgroup of the overgroup $\calG_{\calD\cup\calI}$. This assumption is a consequence of Theorems 1 and 2, which together state that CG-invariances are G-invariances, but G-invariances are CG-invariances only when $\calG_\calI\unlhd\calG_{\calD\cup\calI}$. The assumption is made as in practice, it is easier to work with G-invariances ($\forall T_\calI\in\calG_\calI$, $\Gamma(X)=\Gamma(T_\calI\circ X$)) than CG-invariances due to its simpler definition. The proof of Theorem~1 (CG-invariance $\Rightarrow$ G-invariance) relies on the fact that for any transformation $T_\calI\in\calG_\calI$, we can rewrite
+Furthermore, \citeauthor{Mouli:2021} assume that the subset $\calG_\calI$ of groups is a normal subgroup of the overgroup $\calG_{\calD\cup\calI}$. This assumption is a consequence of Theorems 1 and 2, which together state that CG-invariances are G-invariances, i.e.,
+\[
+\Gamma(X)=\Gamma(T_\calI\circ X)
+\]
+for all $T_\calI\in\calG_\calI$, but G-invariances are CG-invariances only when $\calG_\calI\unlhd\calG_{\calD\cup\calI}$. As it is easier to check G-invariances than CG-invariances in practice due to its simpler definition, the normal subgroup assumption is made in order to make learning G-invariances sufficient for the objective. The proof of Theorem~1 (CG-invariance $\Rightarrow$ G-invariance) relies on the fact that for any transformation $T_\calI\in\calG_\calI$, we can rewrite
 \[
 T_\calI\circ X = T_\calI\circ T_{U_\calD,U_\calI\leftarrow u}\circ X^\text{(hid)} = T_{U_\calD,U_\calI\leftarrow\tilde{u}}\circ X^\text{(hid)}
 \]
-where $T_{U_\calD,\argdot}\in\calG_{\calD\cup\calI}$ and $u,\tilde{u}\in U_\calI$. The result then follows from the definitions of CG-invariance and G-invariance for a representation $\Gamma$. To show that not all G-invariances are CG-invariances, the counterexample in Figure~\ref{fig:counterexample} is given. The proof of Theorem~2 (G-invariance $\Rightarrow$ CG-invariance when $\calG_\calI\unlhd\calG_{\calD\cup\calI}$) uses the fact that under the required assumption, any $T_\calD\circ T_\calI \in\calG_{\calD\cup\calI}$ can be written as $T_\calD\circ T_\calI=T_\calI'\circ T_\calD$ where $T_\calI,T_\calI'\in\calG_\calI$, $T_\calD\in\calG_\calD$. Showing CG-invariance given any sequence of transformations $T\in\calG_{\calD\cup\calI}$ then reduces to repeatedly rewriting the sequence with a leading $T_\calI'$ that is then removed using the G-invariance of the representation $\Gamma$. CG-invariance is then shown after only transformations from $\calG_\calD$ remain in the sequence. 
-
+where $T_{U_\calD,\argdot}\in\calG_{\calD\cup\calI}$ and $u,\tilde{u}\in U_\calI$. The result then follows from repeated applications of CG-invariance and G-invariance definitions for a representation $\Gamma$. To show that not all G-invariances are CG-invariances, the counterexample in Figure~\ref{fig:counterexample} is given. The proof of Theorem~2 (G-invariance $\Rightarrow$ CG-invariance when $\calG_\calI\unlhd\calG_{\calD\cup\calI}$) uses the fact that under the normal subgroup assumption, $T_\calD\circ T_\calI\circ T_\calD^{-1}\in\calG_\calI$ for all $T_\calD\in\calG_\calD$, $T_\calI\in\calG\calI$. This also implies that
+\[
+T_\calD\circ T_\calI = T_\calI'\circ T_\calD
+\]
+for some $T_\calI'=T_\calD\circ T_\calI\circ T_\calD^{-1}$. Therefore for any transformation $T_\calI^{(1)}\circ T_\calD^{(1)}\circ T_\calI^{(2)}\circ\ldots\in\calG_{\calD\cup\calI}$, we can show CG-invariance for a representation $\Gamma$ by using G-invariance to remove the leading $\calG_\calI$ transformation, applying the above fact to swap the order of the new leading $\calG_\calD$ and $\calG_\calI$ transformations, and repeating the procedure until only $\calG_\calD$ transformations remain. CG-invariance then follows from definition. It is worth noting that Theorems~1 and 2 do not make additional assumptions on the groups themselves, and so these results generalize to groups beyond finite linear automorphisms.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.52\textwidth]{counterexample.png}
-\caption{A counterexample for showing not all G-invariances are CG-invariances. The goal is to determine the orientation of an upright or flat rod in an image. A representation that sums the middle row of the image is (G-)invariant to horizontal translations of the image but not invariant to 90$^o$ rotations. Applying a translation before a rotation may result in a representation different from just applying a rotation, and so the representation is not CG-invariant. Figure taken from \parencite{Mouli:2021}.}
+\caption{A counterexample that shows not all G-invariances are CG-invariances. The goal of the example problem is to determine the orientation of an upright or flat rod in an image. A representation that sums the middle row of the image is (G-)invariant to horizontal translations of the image but not invariant to 90$^o$ rotations. Applying a translation before a rotation may result in a representation different from just applying a rotation, and so the representation is not CG-invariant. Figure from \parencite{Mouli:2021}.}
 \label{fig:counterexample}
 \end{figure}
 
-While a set of transformation groups are assumed a priori, it is not known which groups actually influence the output. Additionally, some of the groups may specify invariances that contradict the training data. \citeauthor{Mouli:2021} deal with this problem in their learning framework by obtaining a partial ordering on the invariant subspaces in terms of their ``strength'' and encouraging learning of only the strongest invariances through a regularized objective. In order to identify the invariant subspaces and obtain a partial ordering, \citeauthor{Mouli:2021} require the transformation groups to be linear automorphisms. This restriction implies that the Reynolds operator given by
+While a set of transformation groups are assumed a priori, it is not known which groups represent causal information related to the output. Additionally, some of the groups may actually specify transformations that contradict the training data. \citeauthor{Mouli:2021} address this problem in their proposed framework by restricting the groups to be finite linear automorphisms. Under this restriction, the Reynolds operator given by
+\[
+\bar{T} = \frac{1}{|\calG|}\sum_{T\in\calG}T
+\]
+can be computed for each group $\calG_1,\ldots,\calG_m$. The Reynolds operator is a projection operator (Lemma~1) and so it only has 1 and 0 eigenvalues. The 1-eigenspace $\calW$ of the Reynolds operator for a group $\calG$ corresponds to the subspace of linear transformations $\gamma(x;w,b)=w^Tx+b$, $b\in\bbR$, that is invariant to all transformations $T\in\calG$, i.e.,
+\[
+\gamma(Tx;w,b) = \gamma(x;w,b)
+\]
+if and only if $w\in\calW$ (Lemma~2). The invariant subspace $\calB_M$ for a set of groups can then be computed by taking the intersection of the invariant subspaces $\calW_i$ for group $\calG_i$ in the set, i.e.,
+\[
+\widetilde{B}_M = \bigcap_{i\in M} \calW_i \;,
+\]
+and removing from the intersection its projection onto the subspace $\bigoplus_{N\supset M}\calB_N$ formed by direct sums of the invariant subspace of all overgroups (Theorem~3). Removal of the projection implies that the resulting subspace contains vectors only invariant to all the groups in the set and no more. Thus, the set of invariant subspaces that are each computed from a subset in the power set of groups are disjoint. This result also implies a partial ordering on the invariant subspaces where a subspace corresponding to a superset of groups is defined to have ``stronger'' invariance than a subspace corresponding to a subset of groups. \citeauthor{Mouli:2021}'s framework is then based on finding the strongest invariant subspace that does not contradict the training data.
+\\
+
+Lemma~1 (Reynolds operator is a projection operator) is a well-known result that applies to any group \parencite{Mumford:1994}. However, by restricting the groups to be finite linear automorphisms, the Reynolds operator itself takes the form of a computable matrix. Therefore, its eigenspaces can be found through standard linear algebraic methods, which is important for practical use. Lemma~2 (linear transformation is group-invariant if and only if the inner product vector is in the 1-eigenspace of the Reynolds operator) is mainly used to show that we can restrict considerations to the 1-eigenspace of the Reynolds operator if invariance is what we are after. Its proof follows from direct logical derivations in both directions where sufficiency is shown by using the projection property of the Reynolds operator as well as the definition of eigenvectors, and necessity is shown by reasoning that any vector in the invariant subspace is an eigenvector of the Reynolds operator. Theorem~3 \todo
+
+
+\iffalse
+obtaining a partial ordering on the invariant subspaces in terms of their ``strength'' and encouraging learning of only the strongest invariances through a regularized objective. In order to identify the invariant subspaces and obtain a partial ordering, \citeauthor{Mouli:2021} require the transformation groups to be linear automorphisms. This restriction implies that the Reynolds operator given by
 \[
 \bar{T} = \frac{1}{|\calG|}\sum_{T\in\calG}T
 \]
 is a G-invariant projection operator (Lemma~1). The invariant subspace for a group $\calG$ is then precisely the left eigenspace corresponding to eigenvalue 1 of the Reynolds operator (Lemma~2). To construct the invariant subspace for a set of groups indexed by a set $M$ (Theorem~3), the intersection of the 1-eigenspaces for the individual groups is taken. However, the intersection may also contain vectors that are invariant to some overgroup, and so the group's projection onto the subspace of the overgroup is removed from the intersection. The subspace $\calB_M$ that remains describes the vectors that are invariant to transformations only from the set of groups that it was built from. (\todo proof) \citeauthor{Mouli:2021}'s learning framework relies on being able to identify the invariant subspace for every subset of groups. Once the subspaces have been identified, a cost can be assigned to each subspace that encourages adopting the subspace invariant to the most number of groups.
+\fi
 
 
 \subsection{Learning framework for single-environment extrapolation}

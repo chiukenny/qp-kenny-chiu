@@ -44,3 +44,7 @@
 
 * Updated proposal 1.
 * Cleaned up conceptual summary again.
+
+## 2021-10-03
+
+* Partial clean up of technical summary.
