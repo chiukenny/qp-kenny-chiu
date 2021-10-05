@@ -68,7 +68,7 @@ Note that the definitions of terms and acroynyms used in this technical summary 
 
 \subsection{Single-environment extrapolation setting}
 
-In the setting of single-environment extrapolation described by \textcite{Mouli:2021}, the goal is to train a prediction model (under a supervised learning setup) that is able to perform well (i.e., extrapolate) across different environments when given only data from a single environment at training time. It is assumed that input data include causal and non-causal variables in relation to the output, and that environments differ only in the non-causal variables. In theory, the model should be able to extrapolate if it depends only on the causal variables. The challenge is then learning which information is causal and which is not given only training data from a single environment. To simplfy the problem, \citeauthor{Mouli:2021} assume that differences in the data can be described by a given set of finite linear transformation groups $\calG_1,\ldots,\calG_m$ acting on the data. The objective is then to determine which of these groups correspond to non-causal information and to learn an internal representation of the data that is invariant to these non-causal groups.
+In the setting of single-environment extrapolation described by \textcite{Mouli:2021}, the goal is to train a prediction model (under a supervised learning setup) that is able to perform well (i.e., extrapolate) across different environments when given only data from a single environment at training time. It is assumed that input data include causal and non-causal variables in relation to the output, and that environments differ only in the non-causal variables. In theory, the model should be able to extrapolate if it depends only on the causal variables. The challenge is then learning which information is causal and which is not given only training data from a single environment. To simplify the problem, \citeauthor{Mouli:2021} assume that differences in the data can be described by a given set of finite linear transformation groups $\calG_1,\ldots,\calG_m$ acting on the data. The objective is then to determine which of these groups correspond to non-causal information and to learn an internal representation of the data that is invariant to these non-causal groups.
 \\
 
 \citeauthor{Mouli:2021}'s formulation of the problem borrows from the ICM literature \parencite{Parascandolo:2018} where the SCM in Figure~\ref{fig:scm} is assumed.
@@ -131,7 +131,7 @@ Y|X^\text{(te)} \equdist \hat{Y}|X^\text{(te)}\sim g_{\text{true}}(\Gamma_{\text
 \]
 
 
-\subsection{Assumptions in single-environment extrapolation}
+\subsection{Assumptions and restrictions in single-environment extrapolation}
 
 \textcite{Mouli:2021} make a number of assumptions in the setup described in the previous section in order to simplify the extrapolation problem and to allow for a feasible learning framework. The main assumptions that distinguish the current work from previous work in the literature are the ones revolving around the groups acting on the data.
 \\
@@ -159,7 +159,7 @@ for some $T_\calI'=T_\calD\circ T_\calI\circ T_\calD^{-1}$. Therefore for any tr
 \label{fig:counterexample}
 \end{figure}
 
-While a set of transformation groups are assumed a priori, it is not known which groups represent causal information related to the output. Additionally, some of the groups may actually specify transformations that contradict the training data. \citeauthor{Mouli:2021} address this problem in their proposed framework by restricting the groups to be finite linear automorphisms. Under this restriction, the Reynolds operator given by
+While a set of transformation groups are assumed a priori, it is not known which groups represent information causally related to the output. Additionally, some of the groups may actually specify transformations that contradict the training data. \citeauthor{Mouli:2021} address this problem in their proposed framework by restricting the groups to be finite linear automorphisms. Under this restriction, the Reynolds operator given by
 \[
 \bar{T} = \frac{1}{|\calG|}\sum_{T\in\calG}T
 \]
@@ -171,10 +171,10 @@ if and only if $w\in\calW$ (Lemma~2). The invariant subspace $\calB_M$ for a set
 \[
 \widetilde{B}_M = \bigcap_{i\in M} \calW_i \;,
 \]
-and removing from the intersection its projection onto the subspace $\bigoplus_{N\supset M}\calB_N$ formed by direct sums of the invariant subspace of all overgroups (Theorem~3). Removal of the projection implies that the resulting subspace contains vectors only invariant to all the groups in the set and no more. Thus, the set of invariant subspaces that are each computed from a subset in the power set of groups are disjoint. This result also implies a partial ordering on the invariant subspaces where a subspace corresponding to a superset of groups is defined to have ``stronger'' invariance than a subspace corresponding to a subset of groups. \citeauthor{Mouli:2021}'s framework is then based on finding the strongest invariant subspace that does not contradict the training data.
+and removing from the intersection its projection onto the subspace $\calB_{\supsetneq M}=\bigoplus_{N\supsetneq M}\calB_N$ formed by direct sums of the invariant subspace of all overgroups (Theorem~3). Removal of the projection implies that the resulting subspace contains vectors only invariant to all the groups in the set and no more. Thus, there is a partial ordering on the invariant subspaces where a subspace corresponding to a set of groups is defined to have ``stronger'' invariance than a subspace corresponding to a smaller subset of groups. \citeauthor{Mouli:2021}'s framework is then based on finding the strongest invariant subspace that does not contradict the training data.
 \\
 
-Lemma~1 (Reynolds operator is a projection operator) is a well-known result that applies to any group \parencite{Mumford:1994}. However, by restricting the groups to be finite linear automorphisms, the Reynolds operator itself takes the form of a computable matrix. Therefore, its eigenspaces can be found through standard linear algebraic methods, which is important for practical use. Lemma~2 (linear transformation is group-invariant if and only if the inner product vector is in the 1-eigenspace of the Reynolds operator) is mainly used to show that we can restrict considerations to the 1-eigenspace of the Reynolds operator if invariance is what we are after. Its proof follows from direct logical derivations in both directions where sufficiency is shown by using the projection property of the Reynolds operator as well as the definition of eigenvectors, and necessity is shown by reasoning that any vector in the invariant subspace is an eigenvector of the Reynolds operator. Theorem~3 \todo
+Lemma~1 (Reynolds operator is a projection operator) is a well-known result that applies to any group with a finite measure \parencite{Mumford:1994}. However, by restricting the groups to be finite linear automorphisms, the Reynolds operator itself takes the form of a computable matrix. Therefore, its eigenspaces can be found through standard linear algebraic methods, which is beneficial for practical use. Lemma~2 (linear transformation is group-invariant if and only if its inner product vector is in the 1-eigenspace of the Reynolds operator) is a stepping stone to Theorem~3, and is mainly used to show that considerations can be restricted to the 1-eigenspace of the Reynolds operator if the goal is group invariance. Its proof follows from direct logical derivations in both directions where sufficiency is shown using the projection property of the Reynolds operator as well as the definition of eigenvectors, and necessity is shown by reasoning that any vector in the invariant subspace is an eigenvector of the Reynolds operator. Theorem~3 (invariant subspaces can be partially ordered by invariance strength) is the main result that provides rationale for the proposed learning framework: because the invariant subspaces can be partially ordered by some notion of strength, take the strongest invariant subspace that excludes only invariances to groups that lead to contradictions in the data. Its proof consists of proving each substatement in the theorem, and each subproof is generally based on direct logical reasoning. The proof first shows that there is a hierarchy of subspaces $\calB_M$ and $\calB_{\supsetneq M}$ using induction on $M$ starting with $M=\{1,\ldots,m\}$. Using properties of the subspace construction and Lemma~2, the proof then proceeds to show that the subspaces $\calB_M$ and $\calB_{\supsetneq M}$ are orthogonal for any $M$, and that the vectors in a particular subspace are invariant to only groups that the subspace was constructed from.
 
 
 \iffalse
@@ -188,11 +188,11 @@ is a G-invariant projection operator (Lemma~1). The invariant subspace for a gro
 
 \subsection{Learning framework for single-environment extrapolation}
 
-Suppose that $\calG_1,\ldots,\calG_m$ are known linear automorphisms. Under the context and assumptions described in the previous sections, the framework proposed by \textcite{Mouli:2021} aims to learn a CG-invariant representation $\Gamma$ and a link function $g$ (both of which are neural networks). The representation $\Gamma$ is a neural network layer with $H\geq1$ neurons. The $h$-th neuron has the form
+Under the context and assumptions described in the previous sections, the framework proposed by \textcite{Mouli:2021} aims to learn a CG-invariant representation $\Gamma$ and a link function $g$, both of which are in the form of a neural network. The representation $\Gamma$ is a neural network layer with $H\geq1$ neurons. The $h$-th neuron has the form
 \[
 \Gamma^{(h)}(x) = \sigma\left(x^T\left(\sum_{i=1}^B\bfB_{M_i}\bfom_{M_i,h}\right)+b_h\right)
 \]
-where $\sigma(\argdot)$ is a non-linear activation function, $b_h$ is a bias parameter, $\bfB_{M_i}$ is a matrix whose columns are the orthogonal basis of the invariant subspace $\calB_{M_i}$ built from the set of groups indexed by $M_i$, and $\bfom_{M_i,h}$ are the learnable parameters which correspond to the linear combination coefficients of the orthogonal basis. The parameters are collected in a neuron weight matrix
+where $\sigma(\argdot)$ is a non-linear activation function, $b_h$ is a bias parameter, $\bfB_{M_i}$ is a matrix whose columns are the orthogonal basis of the invariant subspace $\calB_{M_i}$ built from the set of groups indexed by $M_i$, and $\bfom_{M_i,h}$ are the learnable parameters which correspond to the linear combination coefficients of the basis. The parameters are collected in a neuron weight matrix
 \[
 \bfOm =
 \begin{bmatrix}
@@ -203,21 +203,39 @@ where $\sigma(\argdot)$ is a non-linear activation function, $b_h$ is a bias par
 \]
 where $M_1,\ldots,M_B$, $B\leq \mathrm{dim}(\calX)$, are sets of indices corresponding to different subsets of groups. The optimization objective is then
 \[
-\hatOm,\hatb = \argmin_{\bfOm,\bfb}\sum_{(y^\text{(tr)},x^\text{(tr)})\in\calD^\text{(tr)}}\calL\left(y^\text{(tr)},g(\Gamma(x^\text{(tr)};\bfOm,\bfb))\right)+ \lambda R(\bfOm)
+\hatOm,\hatb,\hatW_g = \argmin_{\bfOm,\bfb,\bfW_g}\sum_{(y^\text{(tr)},x^\text{(tr)})\in\calD^\text{(tr)}}\calL\left(y^\text{(tr)},g(\Gamma(x^\text{(tr)};\bfOm,\bfb);\bfW_g)\right)+ \lambda R(\bfOm)
 \]
-where $\lambda>0$ is a regularization parameter, $R(\argdot)$ is the regularization penalty given by
+where $\bfW_g$ is the parameters of $g$, $\lambda>0$ is a regularization parameter, $R(\argdot)$ is the regularization penalty given by
 \[
 R(\bfOm) = \left|\{M_i:|M_i|>\ell, 1\leq i\leq B\}\right| + \sum_{i:|M_i|=\ell,1\leq i\leq B}\onevec\{\|\bfom_{M_i,\argdot}\|_2^2>0\}\;,
 \]
-and $\ell = \min\{|M_i|\cdot\onevec\{\|\bfom_{M_i,\argdot}\|_2^2>0\}: 1\leq i \leq B\}$. The number $\ell$ describes the smallest size across all sets of groups $M_i$ that are used by at least one neuron. The penalty $R(\argdot)$ then counts the number of sets that are larger or are equal in size to the smallest set. This objective encourages $\Gamma$ to use a subspace that is invariant to more groups. Note that while $R(\argdot)$ is discrete, a differentiable approximation is available for optimization.
+and $\ell = \min\{|M_i|\cdot\onevec\{\|\bfom_{M_i,\argdot}\|_2^2>0\}: 1\leq i \leq B\}$. The integer $\ell$ describes the size of the smallest set of groups that is used by at least one neuron (i.e., non-zero weight) across all sets of groups $M_i$. The penalty $R(\argdot)$ then counts the number of sets that are larger or are equal in size to the smallest set. Therefore, this objective encourages $\Gamma$ to use the strongest subspace, i.e., one that is invariant to more groups.
 \\
 
-To use the learning framework, the subspaces for the power set of groups must first be computed. While the procedure only needs to be run once for a particular set of groups, the runtime is technically exponential as the subspace needs to be computed for every set in the power set. The procedure can be set to terminate early once a subspace equal in size to the space of the input is found, and \citeauthor{Mouli:2021} comment that it is unclear if the worst-case runtime occurs in practice.
+To use the learning framework, bases for the invariant subspaces for the power set of groups must first be computed. The procedure starts with the set of all groups and iterates through sets of decreasing size. While the procedure only needs to be run once for a particular initial set of groups, the runtime is technically exponential as the subspace needs to be computed for every set in the power set. This can be made the worst-case runtime by setting the procedure to terminate early once a subspace equal in size to the space of the input is found. \textcite{Mouli:2021} comment that it is unclear if the worst-case runtime occurs in practice.
+\\
 
-\subsection{Analysis}
+Once the bases have been computed, the neural network can be trained with the regularized objective $R(\argdot)$ using standard supervised learning algorithms. Note that $R(\argdot)$ is discrete, and so differentiable approximation is used during training where the indicator function $\onevec\{z>0\}$ is approximated by
+\[
+\widetilde{\onevec}\{z>0\} = \frac{\tau z}{\tau z+1}
+\]
+with $\tau\geq1$ being a temperature hyperparameter.
 
-\todo
-\parencite{Mouli:2021} requires specifying known linear groups of transformations.
+
+\subsection{Analysis of technical work}
+
+We summarize our analysis of the technical work by \textcite{Mouli:2021} from the previous sections and add a few additional comments.
+\\
+
+The main theoretical innovations include the counterfactual formulation of the single-environment extrapolation problem and the results that rationalize the proposed learning framework under the setting. The SCM setup leads to a formalization of extrapolation that can reasoned with, and the group assumption on the environment differences enables working with single-environment data. However, the group assumption is also a potential limitation of the framework where invariances for groups that are not initially specified cannot be learned.
+\\
+
+The theoretical results all use a similar proof technique based on logical derivations that follow from applying properties and definitions. In consideration of Theorems~1 and 2, the problem setting should generalize to groups beyond finite linear automorphisms. However, Lemma~2 and Theorem~3 do not directly apply to non-linear groups and so developing analogous results for other groups would be necessary in order to justify using them with the framework. Extending the setting to non-groups or even just to non-normal subgroups for which Theorem~2 does not apply would likely require a different learning framework altogether as G-invariances are no longer CG-invariances in this case.
+\\
+
+With regards to computation, generalizing the setting to non-finite groups (with a Haar measure) may pose a practical challenge where the Reynolds operator (or orbit-averaging operator in general) may not be computable exactly. The exponential-time procedure for computing invariant subspaces may perform poorly when a large number of groups is given even with the early termination condition. \textcite{Mouli:2021} also comment that using the early termination condition with the regularized objective may lead to inoptimal learning of the invariances, and that encouraging sparsity through an additional entropy regularization term may help with the issue (which is left for future work).
+
+\iffalse
 \begin{itemize}
 
 \item
@@ -250,3 +268,4 @@ Does the chosen regularizing term make sense? Is it optimal? Does its differenti
 The proposed algorithm is exponential as it involves the power set. Can it be reduced? Appendix D: ``...the algorithm stops after finding all the basis for the space vec$(\calX)$, it is unclear if the worst-case runtime occurs in practice.''
 
 \end{itemize}
+\fi

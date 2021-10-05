@@ -48,3 +48,7 @@
 ## 2021-10-03
 
 * Partial clean up of technical summary.
+
+## 2021-10-04
+
+* Clean up remainder of technical summary.
