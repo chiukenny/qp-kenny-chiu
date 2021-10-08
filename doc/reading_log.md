@@ -63,3 +63,28 @@
 	* Ghiasi-Shirazi (2010): [Learning Translation Invariant Kernels for Classification](https://www.jmlr.org/papers/volume11/ghiasi-shirazi10a/ghiasi-shirazi10a.pdf)
 	* Walder (2007): [Learning with Transformation Invariant Kernels](https://papers.nips.cc/paper/2007/hash/c0e190d8267e36708f955d7ab048990d-Abstract.html)
 	* Gong (2012): [Geodesic flow kernel for unsupervised domain adaptation](https://ieeexplore.ieee.org/document/6247911), [slides](http://adas.cvc.uab.es/task-cv2014/wp-content/uploads/2014/10/Gong_talk.pdf)
+	
+# 2021-10-07
+## van der Wilk, 2018
+
+* Uses notion of *insensitivity* in place of invariance where function output does not change "too much" after transformation on the input.
+* Proposes incorporating invariance into marginal likelihood as models on likelihood can fit the training data equally well but have generalization characteristics.
+* For insensitivity, prior on invariant functions has a double-sum/integral kernel over *augmentation* set of points that function should be insensitive to. Parameters of base kernel and augmentation distribution are treated as hyperparameters.
+* GP inference only tractable for Gaussian likelihoods. Approximate inference possible using *inducing variables* that shape a variational distribution. Variational parameters obtained by maximizing ELBO. This approach is also scalable.
+* TODO: inter-domain inducing variables?
+
+# 2021-10-08
+## Schwobel, 2021
+
+* Extends van der Wilk (2018) ideas to neural networks by making last layer a GP.
+* GP a distribution on functions s.t. vector of function values f=(f(x1),...,f(xn)) is Gaussian distributed. Predictive distribution requires inverting covariance matrix (kernel evaluations) which is intractable for large datasets, and so is approximated by a variational distribution.
+* Invariant GPs can be constructed by summing/integrating function evaluation over orbit of input with an augmentation distribution (TODO: invariances are specified through specification of augmentation distribution?). Resulting function is also a GP with a particular kernel. Expected log likelihood in ELBO is not tractable but can be estimated by using unbiased estimators of the parameters.
+* TODO: transformations are restricted to affine (image) transformations in paper, but generating orbit distributions is not restricted to affine transformations? Does this mean "unstructured" invariances are learned (ones that try to approximate the affine transformations)?
+* Covariance functions are closed under well-defined transformations on their input. Deep kernels that represent covariance take neural network-transformed outputs where network parameters are hyperparameters. GP prior becomes mean 0 with deep kernel covariance Gram matrix.
+* Invariant Deep Kernel GP (InvDKGP) is constructed by averaging function from GP prior over augmentation distribution.
+
+## Mroueh, 2015
+
+* Introduces a random feature map of discretized normalized empirical CDFs that in the limit of bins has expectation equal to a group-invariant kernel. The advantage of the feature map is that only transformed templates need to be stored in order to compute it, whereas computing the invariant kernel requires explicitly transforming the points.
+* Theoretical properties of feature map and induced invariant kernel are the main results of paper.
+* TODO: it is assumed the group is known and has a Haar measure?
