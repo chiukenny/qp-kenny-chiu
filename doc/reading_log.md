@@ -88,3 +88,18 @@
 * Introduces a random feature map of discretized normalized empirical CDFs that in the limit of bins has expectation equal to a group-invariant kernel. The advantage of the feature map is that only transformed templates need to be stored in order to compute it, whereas computing the invariant kernel requires explicitly transforming the points.
 * Theoretical properties of feature map and induced invariant kernel are the main results of paper.
 * TODO: it is assumed the group is known and has a Haar measure?
+
+# 2021-10-09
+
+* Save for later:
+
+    * Li (2018): [https://arxiv.org/abs/1807.08479](Domain Generalization via Conditional Invariant Representation)
+	* Li (2018): [https://openaccess.thecvf.com/content_ECCV_2018/papers/Ya_Li_Deep_Domain_Generalization_ECCV_2018_paper.pdf](Deep Domain Generalization via Conditional Invariant Adversarial Networks)
+	* Henze (2003): [https://www.sciencedirect.com/science/article/pii/S0047259X03000447](Invariant tests for symmetry about an unspecified point based on the empirical characteristic function)
+
+## [https://www.di.ens.fr/~fbach/hbcm_2013_kertest_spm.pdf](Harchaoui, 2013)
+
+## [http://proceedings.mlr.press/v139/jia21a/jia21a.pdf](Jia, 2021)
+
+* Proposes a shift-invariant convolutional neural tangent kernel (SCNTK) for two-sample tests and out-of-distribution detection with MMD.
+* Purpose of shift-invariance is so that the NTK is characteristic, which is required for [https://jmlr.csail.mit.edu/papers/volume13/gretton12a/gretton12a.pdf](MMD) to be a proper metric.
