@@ -24,9 +24,9 @@ The main tasks of this proposed project would include the following:
 \begin{enumerate}
 
 \item
-Show how to construct a kernel that is invariant to a specific set of groups. It is well-known that for a given function $f$ and a group $\calG$, averaging the function over the Haar measure $\lambda$ of the group produces the $\calG$-invariant function
+Show how to construct a kernel that is invariant to a specific set of groups. \textcite{Haasdonk:2005} show that for a given kernel $k:\calX\times\calX\rightarrow\bbR$ and a group $\calG$, integrating the kernel inputs over the (normalized) Haar measure $\lambda$ of the group produces the $\calG$-invariant kernel
 \[
-\bar{f}(x) = \int_\calG f(gx)\mathrm{d}\lambda(g)\;.
+\bar{k}(x,x') = \int_\calG \int_\calG k(gx,g'x')\mathrm{d}\lambda(g)\mathrm{d}\lambda(g')\;.
 \]
 However, given a set of groups $\calG_\calI$ where $\calI\subset\{1,\ldots,m\}$, it may not be obvious how to construct a function that is invariant to only transformations $g\in\calG_\calI$ and not $g'\in\calG_{\supset\calI}$ where $\calI$ is a strict subset of $\supset\!\calI$. \textcite{Mouli:2021} deal with this problem in the context of finite linear groups by computing the intersection of the invariant eigenspaces for the groups in a set and removing their projection onto invariant eigenspaces for overgroups (Theorem~3). We expect that a kernel invariant to a specific set of groups may be constructed (or at least described) by drawing on summation properties of reproducing kernel Hilbert spaces (RKHS) as well as RKHS decomposition results from \parencite{Elesedy:2021} (Lemmas~3 and 4 in particular). The goal would be to provide theoretical results analogous to Lemma~2 and Theorem~3 of \parencite{Mouli:2021}.
 

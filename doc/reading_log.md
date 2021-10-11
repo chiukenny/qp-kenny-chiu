@@ -103,3 +103,13 @@
 
 * Proposes a shift-invariant convolutional neural tangent kernel (SCNTK) for two-sample tests and out-of-distribution detection with MMD.
 * Purpose of shift-invariance is so that the NTK is characteristic, which is required for [https://jmlr.csail.mit.edu/papers/volume13/gretton12a/gretton12a.pdf](MMD) to be a proper metric.
+
+# 2021-10-10
+
+## Mei, 2021
+
+Focuses mainly on statistical learning results of invariant random feature models (activations with fixed, randomly drawn weights) and invariant kernel machines.
+
+## Haasdonk, 2005
+
+Work that first introduced Haar-integration kernels? Definition of HI-kernel involves measurable subset of group rather than group itself. Allows for small transformations of input.
