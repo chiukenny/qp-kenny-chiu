@@ -67,7 +67,18 @@ For continuous linear groups, orbit-average over a Haar measure $\lambda$
 \begin{itemize}
 
 \item
-Kernel methods work on inner products of feature maps ($\phi:X\rightarrow\mathcal{H}$) of observations in the RKHS associated with kernel. Inner products may be computed without explicitly computing the high-dimensional feature map (``kernel trick'').
+Let $X$ be a r.v. on domain $\calX$. A kernel $k:\calX\times\calX\rightarrow\mathbb{R}$ induces a RHKS $\mathcal{H}$ of functions $f:\calX\rightarrow\mathbb{R}$ where for $f\in\mathcal{H}$ and $x\in\calX$,
+\[
+\langle f,k(x,\cdot)\rangle = f(x)
+\]
+(reproducing property). $k(x,\cdot)=\phi_x$ can also be considered an implicit feature map ($\phi_x:\calX\rightarrow\mathbb{R}$) where
+\[
+\langle \phi_x,\phi_{x'}\rangle = k(x,x')
+\]
+is a measure of similarity.
+
+\item
+Kernel methods work on inner products of feature maps of observations in the RKHS associated with kernel. Inner products may be computed without explicitly computing the high-dimensional feature map (``kernel trick'').
 
 \item
 Main challenge of designing kernel-based hypothesis tests is deriving large-sample distribution of test statistic under null.
@@ -76,7 +87,11 @@ Main challenge of designing kernel-based hypothesis tests is deriving large-samp
 Gram matrix should be positive semidefinite. Satisfised if kernel is symmetric and positive semidefinite.
 
 \item
-Let $X$ be a r.v. with distribution $\mathbb{P}$. \href{https://en.wikipedia.org/wiki/Kernel_embedding_of_distributions}{Mean element} $\mu_\mathbb{P}$ associated with $X$ is unique element of RKHS $\mathcal{H}$ s.t. for all $f\in\mathcal{H}$,
+Let $X$ be a r.v. with distribution $\mathbb{P}$. \href{https://en.wikipedia.org/wiki/Kernel_embedding_of_distributions}{Mean element}
+\[
+\mu_\mathbb{P} = \mathbb{E}_{\mathbb{P}}[\phi_X]
+\]
+associated with $X$ is unique element of RKHS $\mathcal{H}$ s.t. for all $f\in\mathcal{H}$,
 \[
 \langle\mu_\mathbb{P},f\rangle = \mathbb{E}_\mathbb{P}[f(X)]
 \]
@@ -87,7 +102,10 @@ Covariance operator $\Sigma_\mathbb{P}:\mathcal{H}\times \mathcal{H}\rightarrow\
 Empirical estimates of inner products that lead to estimates of element/operator are available.
 
 \item
-If $\mathrm{dim}(\mathcal{H}=\infty$, $\mu_\mathbb{P}$ has more significance than in classical statistics.
+Kernel is characteristic if mean embedding $\mu:\mathbb{P}\rightarrow\mathcal{H}$ is injective. Each distribution can be uniquely represented in the RKHS and all statistica features of distributions are preserved (\todo) by a characteristic kernel.
+
+\item
+If $\mathrm{dim}(\mathcal{H})=\infty$, $\mu_\mathbb{P}$ has more significance than in classical statistics.
 
 \item
 Detecting (conditional?) invariances in single training environment via hypothesis testing. Explicitly testing for invariances? \href{https://www.sciencedirect.com/science/article/pii/S0047259X03000447}{Invariant testing}

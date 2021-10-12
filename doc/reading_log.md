@@ -106,10 +106,36 @@
 
 # 2021-10-10
 
-## Mei, 2021
+## [https://arxiv.org/abs/2102.13219](Mei, 2021)
 
 Focuses mainly on statistical learning results of invariant random feature models (activations with fixed, randomly drawn weights) and invariant kernel machines.
 
-## Haasdonk, 2005
+## [https://www.researchgate.net/publication/225489883_Invariance_in_Kernel_Methods_by_Haar-Integration_Kernels](Haasdonk, 2005)
 
 Work that first introduced Haar-integration kernels? Definition of HI-kernel involves measurable subset of group rather than group itself. Allows for small transformations of input.
+
+# 2021-10-11
+
+## [http://proceedings.mlr.press/v28/muandet13.pdf](Muandet, 2013)
+
+* Introduces Domain-Invariant Component Analysis (DICA), which learns an invariant transformation of the inputs by minimizing "distributional variance". The feature map (induced by the kernel) is projected onto a (eigen)subspace that minimizes the distributional variance between samples.
+* Assumes data from multiple domains and aims to generalize classifier to unseen domains.
+
+## [http://proceedings.mlr.press/v28/zhang13d.pdf](Zhang, 2013)
+
+* Proposes domain adaptation of models to differences caused by target shifts (change in output marginal), conditional shifts (change in input given output), and generalized target shifts (changes in both output marginal and input given output). A causal interpretation is given and a practical algorithm for learning the corresponding distributions based on kernel mean matching is proposed.
+* Causal perspective differs in that the joint is factorized into output marginal and input given output rather than input marginal and output given input? Claimed reason is that handling the change in the joint is more convenient this way.
+
+## [https://www.sciencedirect.com/science/article/pii/S0047259X03000447](Henze, 2005)
+
+* Proposes a test for testing affine (reflection?) invariance. Test statistic has a representation in terms of distance between nonparametric kernel density estimators.
+* Very technical paper. Context appears relevant but method does not seem to be based on kernels and feature maps.
+
+## Save for later
+
+* Gretton (2012): [https://www.jmlr.org/papers/volume13/gretton12a/gretton12a.pdf](A Kernel Two-Sample Test)
+* Gretton (2007): [https://www.aaai.org/Papers/AAAI/2007/AAAI07-262.pdf](A Kernel Approach to Comparing Distributions)
+* Gretton (2006): [https://proceedings.neurips.cc/paper/2006/file/e9fb2eda3d9c55a0d89c98d6c54b5b3e-Paper.pdf](A Kernel Method for the Two-Sample-Problem)
+* Chwialkowski (2016): [http://proceedings.mlr.press/v48/chwialkowski16.pdf](A Kernel Test of Goodness of Fit)
+* Kellner (2015): [https://arxiv.org/pdf/1507.02904.pdf](A One-Sample Test for Normality with Kernel Methods)
+* Ancona (2006): [https://www.semanticscholar.org/paper/An-Invariance-Property-of-Predictors-in-Hypothesis-Ancona-Stramaglia/90c9cdf3e19e05699b8af7a94862fa1b45a811b3](An Invariance Property of Predictors in Kernel-Induced Hypothesis Spaces)
