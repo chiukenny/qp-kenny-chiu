@@ -108,7 +108,35 @@ Kernel is characteristic if mean embedding $\mu:\mathbb{P}\rightarrow\mathcal{H}
 If $\mathrm{dim}(\mathcal{H})=\infty$, $\mu_\mathbb{P}$ has more significance than in classical statistics.
 
 \item
-Detecting (conditional?) invariances in single training environment via hypothesis testing. Explicitly testing for invariances? \href{https://www.sciencedirect.com/science/article/pii/S0047259X03000447}{Invariant testing}
+(Kellner,2015) MMD(? or related quantity) is a pseudo-metric. If restricting space of functions (e.g., r.v. space) to unit ball of RKHS with positive semi-definite characteristic kernel, MMD is a metric.
+
+\end{itemize}
+
+\section{Detecting conditional invariances in single training environment via hypothesis testing}
+
+\begin{itemize}
+
+\item
+Case of invariance of output to single known group acting on inputs. Following (Mouli, 2021) in that we specify potential group of invariant transformations and testing if dataset contradicts invariance to the group, rather than if dataset appears to be invariant to group.
+
+\item
+Other assumptions?
+
+\item
+Possible two-sample test procedure: generate transformed inputs as ``second'' sample and compare conditional mean embeddings (e.g., Gretton, 2007). How should embeddings be estimated? (Song, 2013) Conditional embedding operator is a family of points in RKHS. Only when conditioned on a fixed value is it a single point.
+\\
+
+Given dataset $\{(x_i,y_i)\}_{i=1}^N$ assumed to be from some joint distribution $\mathbb{P}_{XY}=\mathbb{P}_X\mathbb{P}_{Y|X}$, want to determine if $\mathbb{P}_{Y|X}\overset{d}{=}\mathbb{P}_{Y|\calG\cdot X}$ for group $\calG$ where $\mathbb{P}_{Y|\calG\cdot X}(y|x)=\mathbb{P}_{Y|\calG\cdot X}(y|g\cdot x)$ for all $g\in\calG$, $x\in\calX$. (Elesedy, 2021) obtains invariant functions by orbit-averaging. We want a metric of some form \todo
+\[
+\mathrm{MMD}(\mathbb{P},\mathbb{P}') = \|\mu_{Y|X} - \mu_{Y|\calG\cdot X}\|_\mathcal{H}^2
+\]
+How to handle $X$ and $\mu_{Y|X}$ being a family of functions? $\mu_{Y|\calG\cdot X}$ estimated by generating/summing/integration transformed inputs?
+\\
+
+Comparing joint distributions only makes sense if it is assumed $\mathbb{P}(X)=\mathbb{P}(\calG\cdot X)$? This does not make sense for extrapolation context ($Y|X$ does not have to be invariant then?).
+
+\item
+One-sample test? Via parametric bootstrap (Kellner, 2015)?
 
 \end{itemize}
 

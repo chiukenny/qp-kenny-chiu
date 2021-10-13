@@ -139,3 +139,21 @@ Work that first introduced Haar-integration kernels? Definition of HI-kernel inv
 * Chwialkowski (2016): [A Kernel Test of Goodness of Fit](http://proceedings.mlr.press/v48/chwialkowski16.pdf)
 * Kellner (2015): [A One-Sample Test for Normality with Kernel Methods](https://arxiv.org/pdf/1507.02904.pdf)
 * Ancona (2006): [An Invariance Property of Predictors in Kernel-Induced Hypothesis Spaces](https://www.semanticscholar.org/paper/An-Invariance-Property-of-Predictors-in-Hypothesis-Ancona-Stramaglia/90c9cdf3e19e05699b8af7a94862fa1b45a811b3)
+
+# 2021-10-12
+
+## [Gretton, 2007](https://www.aaai.org/Papers/AAAI/2007/AAAI07-262.pdf)
+
+* Standard two-sample kernel test based on MMD? Under alternative (different distributions), MMD^2 converges to Gaussian (see Serfling 1980).
+
+## [Kellner, 2015](https://arxiv.org/pdf/1507.02904.pdf)
+
+* One-sample kernel test for normality where MMD compares empirical embedding to Gaussian embedding. Critical value estimated via parametric bootstrap.
+
+## [Chwialkowski, 2016](http://proceedings.mlr.press/v48/chwialkowski16.pdf)
+
+* Kernel goodness-of-fit test based on Stein discrepancy and bootstrapping. Requires target distribution to be known up to normalization constant.
+
+## [Song, 2013](http://www.gatsby.ucl.ac.uk/~gretton/papers/SonFukGre13.pdf)
+
+* Conditional embedding is not a single point RKHS but a family of points. Fixing the conditioned value, a single point is obtained. A conditional embedding operator that outputs the conditional embedding given a feature map of a conditioning point exists, but relies on an assumption that does not always hold. When assumption does not hold, operator is used to get an approximate mean embedding.
