@@ -10,6 +10,41 @@
 
 \subsection{Background and notation}
 
+\todo
+
+Context 1:
+
+\begin{itemize}
+
+\item
+Assume that we have a dataset $\calD=\{(x_i,y_i)\}_{i=1}^n$, $x_i\in\calX$, $y_i\in\calY$, from a single environment, i.e., $x_i\sim\bbP_X$ and $y_i\sim\bbP_{Y|X}$. Let $\bbP_{XY}=\bbP_X\bbP_{Y|X}$ be the joint distribution corresponding to that environment.
+
+\item
+Assume that the differences in environments can be modeled by some unknown group $\calG$ acting on inputs $X\in\calX$, e.g., $\bbP(X)$ and $\bbP(g\cdot X)$ for $\mathrm{id}()\neq g\in\calG$ are not equal and correspond to different environments. Assume that there is a true $\bbP_{Y|X}$ that holds across environments.
+
+\item
+We try to determine if $\bbP_{Y|X}$ being invariant to transformations $g\in\calG$ on $X$ for some specified $\calG$ would contradict the dataset, i.e., whether $\bbP_{Y|X}\equdist\bbP_{Y|g\cdot X}$ is plausible for $\calD$.
+
+\item
+Proposed approach 1: bootstrap samples from different environments by applying transformations to $X$ then do kernel hypothesis test (via MMD) to compare conditional embeddings. \todo Problem1: if  $\bbP(X)$ and $\bbP(g\cdot X)$ are not equal, how to bootstrap sample from a different environment? \todo Problem2: even if invariance does not ``contradict'', embedded distributions may be far apart? \todo Problem3: how to compare conditional embedding operator?
+
+\end{itemize}
+
+Context 2: observed $g$
+
+\begin{itemize}
+
+\item
+Assume that we have a dataset $\calD=\{(g_i\cdot x_i,g_i,y_i)\}_{i=1}^n$, $x_i\in\calX$, $y_i\in\calY$, $g_i\in\calG$ for some known group $\calG$ acting on $\calX$, from a single environment, i.e., $x_i\sim\bbP_X$, $g_i\sim\bbP_G$, $y_i\sim\bbP_{Y|X,G}$. Let $\bbP_{XY\calG}=\bbP_X\bbP_G\bbP_{Y|X,G}$ be the joint distribution corresponding to that environment. Examples of when $g$ is observed: image orientation, image background.
+
+\item
+Assume that $\bbP_G$ differs between environments.
+
+\item
+We try to determine if $\bbP_{Y|X,G}=\bbP_{Y|X}$. \todo This can be done through kernel conditional independence tests? Test $\bbP_{XY}\overset{?}{\equdist}\int_\calG \bbP_{XYG}d\lambda$. \todo Or just bootstrapping new datasets by sampling and applying $g$ to $x$?
+
+\end{itemize}
+
 \subsection{\todo Methods}
 
 \subsection{\todo Experimental results}

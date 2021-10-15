@@ -118,6 +118,9 @@ If $\mathrm{dim}(\mathcal{H})=\infty$, $\mu_\mathbb{P}$ has more significance th
 
 \item
 Case of invariance of output to single known group acting on inputs. Following (Mouli, 2021) in that we specify potential group of invariant transformations and testing if dataset contradicts invariance to the group, rather than if dataset appears to be invariant to group.
+\\
+
+\todo Contradict in hard sense (e.g., certain transformation impossible) or distributional sense (e.g., certain transformations unlikely)?
 
 \item
 Other assumptions?
@@ -134,6 +137,12 @@ How to handle $X$ and $\mu_{Y|X}$ being a family of functions? $\mu_{Y|\calG\cdo
 \\
 
 Comparing joint distributions only makes sense if it is assumed $\mathbb{P}(X)=\mathbb{P}(\calG\cdot X)$? This does not make sense for extrapolation context ($Y|X$ does not have to be invariant then?).
+
+\item
+If conditional is invariant to group, then conditional embedding should be same for orbit of conditioned value. Does that imply anything for conditional embedding operator? Projection? Invariant conditional embedding operator conditioned on orbits?
+
+\item
+Hard contradictions vs soft contradictions?
 
 \item
 One-sample test? Via parametric bootstrap (Kellner, 2015)?

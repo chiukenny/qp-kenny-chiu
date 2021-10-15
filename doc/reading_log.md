@@ -157,3 +157,18 @@ Work that first introduced Haar-integration kernels? Definition of HI-kernel inv
 ## [Song, 2013](http://www.gatsby.ucl.ac.uk/~gretton/papers/SonFukGre13.pdf)
 
 * Conditional embedding is not a single point RKHS but a family of points. Fixing the conditioned value, a single point is obtained. A conditional embedding operator that outputs the conditional embedding given a feature map of a conditioning point exists, but relies on an assumption that does not always hold. When assumption does not hold, operator is used to get an approximate mean embedding.
+
+# 2021-10-15
+
+## [Li, 2018](https://www.aaai.org/ocs/index.php/AAAI/AAAI18/paper/view/16595/16558)
+
+* Assumes both marginal X and condition Y|X change across domains.
+* Proposed method aims to find conditional invariant representation h(X) that reduces variance of conditional distribution h(X)|Y across source domains. Assuming that P(Y) does not change across domains, joint distribution is invariant to changes in X.
+
+## [Jitkrittum, 2020](https://proceedings.mlr.press/v124/jitkrittum20a/jitkrittum20a.pdf)
+
+* Tests hypotheses p(.|x)=r(.|x) given (empirical) marginal r(x) using a proposed Kernel Conditional Stein Discrepancy (requires gradient of log density of p).
+
+## [Doran, 2014](https://auai.org/uai2014/proceedings/individuals/194.pdf)
+
+* Proposes kernel conditional independence test based on permutation sampling.
