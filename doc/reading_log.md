@@ -108,11 +108,11 @@
 
 ## [Mei, 2021](https://arxiv.org/abs/2102.13219)
 
-Focuses mainly on statistical learning results of invariant random feature models (activations with fixed, randomly drawn weights) and invariant kernel machines.
+* Focuses mainly on statistical learning results of invariant random feature models (activations with fixed, randomly drawn weights) and invariant kernel machines.
 
 ## [Haasdonk, 2005](https://www.researchgate.net/publication/225489883_Invariance_in_Kernel_Methods_by_Haar-Integration_Kernels)
 
-Work that first introduced Haar-integration kernels? Definition of HI-kernel involves measurable subset of group rather than group itself. Allows for small transformations of input.
+* Work that first introduced Haar-integration kernels? Definition of HI-kernel involves measurable subset of group rather than group itself. Allows for small transformations of input.
 
 # 2021-10-11
 
@@ -172,3 +172,9 @@ Work that first introduced Haar-integration kernels? Definition of HI-kernel inv
 ## [Doran, 2014](https://auai.org/uai2014/proceedings/individuals/194.pdf)
 
 * Proposes kernel conditional independence test based on permutation sampling.
+
+# 2021-10-16
+
+## [Zhang, 2012](https://arxiv.org/ftp/arxiv/papers/1202/1202.3775.pdf)
+
+* Precursor to (Doran, 2014). Details about Gamma approximation to null distribution.

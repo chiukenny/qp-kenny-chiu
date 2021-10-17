@@ -10,6 +10,115 @@
 
 \subsection{Background and notation}
 
+Testing conditional invariances in data via kernel conditional independence tests
+
+\begin{itemize}
+
+\item
+Context: suppose we have a dataset $\calD=\{(x_i,g_i,y_i)\}_{i=1}^n$ collected from a single environment where $x_i\in\calX$ are inputs (in some canonical form), $y_i\in\calY$ are outputs, and $g_i\in\calG$ for some known group $\calG$ acting on $\calX$ are observable transformations on the inputs (e.g., image orientations, image backgrounds, etc.). Assume that the joint distribution factorizes as $\bbP_{XYG}=\bbP_G\bbP_X\bbP_{Y|X,G}$. Assume that $\bbP_X$ and $\bbP_{Y|X,G}$ are fixed across environments but $\bbP_G$ may vary.
+
+\item
+Objective: our goal is to determine whether the outputs $Y_i$ being conditionally invariant to the transformations $G_i$, i.e.,
+\[
+\bbP_{XYG}=\bbP_G\bbP_X\bbP_{Y|X,G} = \bbP_G\bbP_X\bbP_{Y|X}\;,
+\]
+would contradict what is observed in the given dataset.
+
+\item
+Proposed approach: we set up this problem as a kernel conditional independence test where the null hypothesis says the outputs are conditionally invariant and the alternative hypothesis says otherwise.
+\\
+
+We follow the permutation-based approach described in \parencite{Doran:2014}. The idea is that under the null, we should be able to permute the transformations $g_i$ in the dataset without disturbing the joint distribution. We can then transform the conditional independence test into a two-sample test by splitting the dataset in half, permuting the transformations in one half, and then comparing the empirical distributions of the two halves. It is expected that unlike in \parencite{Doran:2014}, our setup does not require learning the permutation matrix (although we may want to maximize the number of samples that have different transformations after permutation).
+\\
+
+For comparing the distributions, we can use the well-studied MMD test statistic for two-sample kernel tests \parencite{Gretton:2012}. Let $k_x$, $k_y$ and $k_g$ be characteristic, positive-definite kernel functions defined on their respective spaces, e.g., $k_x:\calX\times\calX\rightarrow\bbR$ and where $k_x$ has a corresponding feature map $\phi_x:\calX\rightarrow\calH_\calX$ such that $k_x(x,x')=\langle\phi_x(x),\phi_x(x')\rangle$ with $\calH_\calX$ being the RKHS of $k_x$. Define the product kernel $k_{xyg}((x,y,g),(x',y',g'))=k_x(x,x')k_y(y,y')k_g(g,g')$ over $\calX\times\calY\times\calG$ with feature map $\phi_x\otimes\phi_y\otimes\phi_g$ ($\otimes$ being the tensor product). Because the kernels are characteristic, the kernel mean embedding $\mu$ (estimated by $\hatmu$) maps distributions to unique functions in the RKHS of their respective spaces. Let $\bbP^{(1)}$ and $\bbP^{(2)}$ be the empirical distributions of the split dataset and let $\bfP$ be the permutation matrix. The MMD is then computed as
+\[
+\MMD(\bbP^{(1)},\bfP\bbP^{(2)}) = \left\|\hatmu(\bbP^{(1)})-\hatmu(\bfP\bbP^{(2)})\right\|_\calH^2\;.
+\]
+For small datasets, the null distribution of the MMD test statistic can be estimated via bootstrap where the original dataset is randomly split in half multiple times. If the null is not rejected, then the conditional invariance assumption does not significantly contradict the given data.
+
+\item
+Limitations: the transformations $g_i$ must be observable and canonical forms of the inputs must be computable.
+
+\item
+Other considerations: the setup does not seem to restrict the input and output spaces nor does it make assumptions on the transformations. The set of possible transformations may not necessarily need to be a group (reduces problem to standard conditional independence testing of three variables)?
+
+\end{itemize}
+
+If the objective was not to determine whether assuming conditional invariance would contradict the data but to determine if the empirical conditional distribution is ``invariant enough'', we can give an alternative formulation:
+
+\todo
+
+\begin{itemize}
+
+\item
+Context: suppose we have a dataset $\calD=\{(x_i,y_i)\}_{i=1}^n$ collected from a single environment $g$ where $x_i\in\calX$ are inputs, $y_i\in\calY$ are outputs, and environments can be represented by transformations $g$ from some unknown group $\calG$ acting on $\calX$. Assume that the joint distribution factorizes as $\bbP_{XY}=\bbP_X\bbP_{Y|X}$ where $\bbP_{Y|X}$ is $\calG$-invariant, i.e.,
+\[
+\bbP_{Y|X} = \bbP_{Y|g\cdot X}\;.
+\]
+Assume that $\bbP_X$ and $\bbP_{Y|X}$ is fixed across environments but that we may have $\bbP_X(X)\neq\bbP_X(g\cdot X)=\bbP_{g\cdot X}(X)$. Assume that $\calG$ is a compact group with a Haar measure $\lambda$.
+
+\item
+Objective: our goal is to determine whether a specified $\calG$ is the ``correct'' group that the conditional distribution $\mathbb{P}_{Y|X}$ is invariant to, i.e., whether
+\[
+\bbP_{Y|X} = \bbP_{Y|g\cdot X}
+\]
+for all $g\in\calG$ and $X\in\calX$.
+
+\item
+Proposed approach: we set up this problem as a kernel hypothesis test for comparing distributions where the null hypothesis says that $\mathbb{P}_{Y|X}$ is $\calG$-invariant on $X$ and the alternative hypothesis says otherwise.
+\\
+
+Let $\calO$ be the orbit-averaging operator \parencite{Elesedy:2021}
+\[
+\calO f(x) = \int_\calG f(g\cdot x)\mathrm{d}\lambda(g)\;.
+\]
+\parencite{Elesedy:2021,Elesedy:2021:equivariant} show that a function $f$ is $\calG$-invariant if and only if $\calO f=f$. We can likely extend this argument to a function $g(x,y)$ with two inputs where $g$ is $\calG$-invariant in one input, i.e., rewriting $g(x,y)=g_y(x)$ and $g_y(x)$ being $\calG$-invariant if and only if $\calO g_y = g_y$. Applying this to distributions, we should have $\bbP_{Y|X}$ is invariant if and only if for all $y\in\calY$,
+\[
+\bbP_{Y|X}(y|x)=\int_\calG\bbP_{Y|X}(y|g\cdot x)\mathrm{d}\lambda(g)
+\]
+and so
+\[
+\bbP_{Y|X}(y|x)\bbP_X(x)=\int_\calG\mathbb{P}_{Y|X}(y|g\cdot x)\bbP_X(x)\mathrm{d}\lambda(g) \;.
+\]
+
+
+\end{itemize}
+
+\todo
+
+\begin{itemize}
+
+\item
+Context: suppose we have a dataset $\calD=\{(x_i,y_i)\}_{i=1}^n$ collected from a single environment where $x_i\in\calX$ are inputs and $y_i\in\calY$ are outputs. Assume that the joint distribution factorizes as $\bbP_{XY}=\bbP_X\bbP_{Y|X}$. Assume that $\bbP_{Y|X}$ is fixed across environments but $\bbP_X$ may vary by means of some unknown group $\calG$ acting on $\calX$, i.e., $\bbP_X\neq\bbP_{g\cdot X}$ for $g\in\calG$ (each element in an $X$-orbit corresponds to a different environment). Assume that $\calG$ is a compact group with a Haar measure $\lambda$.
+
+\item
+Objective: our goal is to determine whether the conditional distribution $\mathbb{P}_{Y|X}$ is invariant to transformations $g\in\calG$ that act on $X$, i.e.,
+\[
+\mathbb{P}_{Y|X}=\mathbb{P}_{Y|g\cdot X}\;.
+\]
+
+\item
+Proposed approach: we set up this problem as a kernel hypothesis test for comparing distributions where the null hypothesis says that $\mathbb{P}_{Y|X}$ is $\calG$-invariant on $X$ and the alternative hypothesis says otherwise.
+\\
+
+Let $\calO$ be the orbit-averaging operator \parencite{Elesedy:2021}
+\[
+\calO f(x) = \int_\calG f(g\cdot x)\mathrm{d}\lambda(g)\;.
+\]
+\parencite{Elesedy:2021,Elesedy:2021:equivariant} show that a function $f$ is $\calG$-invariant if and only if $\calO f=f$. We can likely extend this argument to a function $g(x,y)$ with two inputs where $g$ is $\calG$-invariant in one input, i.e., rewriting $g(x,y)=g_y(x)$ and $g_y(x)$ being $\calG$-invariant if and only if $\calO g_y = g_y$. Applying this to distributions, we should have $\bbP_{Y|X}$ is invariant if and only if for all $y\in\calY$,
+\[
+\bbP_{Y|X}(y|x)=\int_\calG\bbP_{Y|X}(y|g\cdot x)\mathrm{d}\lambda(g)
+\]
+and so
+\[
+\bbP_{Y|X}(y|x)\bbP_X(x)=\int_\calG\mathbb{P}_{Y|X}(y|g\cdot x)\bbP_X(x)\mathrm{d}\lambda(g) \;.
+\]
+
+
+\end{itemize}
+
+
 \todo
 
 Context 1:
@@ -35,15 +144,35 @@ Context 2: observed $g$
 \begin{itemize}
 
 \item
-Assume that we have a dataset $\calD=\{(g_i\cdot x_i,g_i,y_i)\}_{i=1}^n$, $x_i\in\calX$, $y_i\in\calY$, $g_i\in\calG$ for some known group $\calG$ acting on $\calX$, from a single environment, i.e., $x_i\sim\bbP_X$, $g_i\sim\bbP_G$, $y_i\sim\bbP_{Y|X,G}$. Let $\bbP_{XY\calG}=\bbP_X\bbP_G\bbP_{Y|X,G}$ be the joint distribution corresponding to that environment. Examples of when $g$ is observed: image orientation, image background.
+Assume that we have a dataset $\calD=\{(x_i,g_i,y_i)\}_{i=1}^n$, $x_i\in\calX$, $y_i\in\calY$, $g_i\in\calG$ for some known group $\calG$ acting on $\calX$, from a single environment, i.e., $x_i\sim\bbP_X$, $g_i\sim\bbP_G$, $y_i\sim\bbP_{Y|X,G}$. Let $\bbP_{XYG}=\bbP_X\bbP_G\bbP_{Y|X,G}$ be the joint distribution corresponding to that environment. Examples of when $g$ is observed: image orientation, image background.
 
 \item
 Assume that $\bbP_G$ differs between environments.
 
 \item
-We try to determine if $\bbP_{Y|X,G}=\bbP_{Y|X}$. \todo This can be done through kernel conditional independence tests? Test $\bbP_{XY}\overset{?}{\equdist}\int_\calG \bbP_{XYG}d\lambda$. \todo Or just bootstrapping new datasets by sampling and applying $g$ to $x$?
+We try to determine if $\bbP_{Y|X,G}=\bbP_{Y|X}$, i.e., if $\mathbb{P}_{XYG}=\bbP_X\bbP_{Y|X}\bbP_G$. \todo This can be done through permutation-based kernel conditional independence tests?
+
+\item
+\todo If non-diverse $g$ observed, should not be a problem because does not contradict (test not rejected).
 
 \end{itemize}
+
+Context 3:
+
+\begin{itemize}
+
+\item
+Assume that we have a dataset $\calD=\{(x_i,g_i,y_i)\}_{i=1}^n$, $x_i\in\calX$, $y_i\in\calY$, $g_i\in\calG$ for some known group $\calG$ acting on $\calX$, from a single environment, i.e., $x_i\sim\bbP_X$, $g_i\sim\bbP_G$, $y_i\sim\bbP_{Y|X,G}$. Let $\bbP_{XY\calG}=\bbP_X\bbP_G\bbP_{Y|X,G}$ be the joint distribution corresponding to that environment. Examples of when $g$ is observed: image orientation, image background.
+
+\item
+Assume that $\bbP_G$ differs between environments.
+
+\item
+We try to determine if $\bbP_{Y|X,G}=\bbP_{Y|X}$. \todo By Lemma~1 of \parencite{Elesedy:2021}, $\bbP_{XY}$ is invariant if and only if $\bbP_{XY}\equdist\int_\calG \bbP_{XYG}d\lambda$. We can then do standard two-sample kernel tests where second sample is obtained by orbit-averaged? \todo This is testing if distributions are consistent, not whether invariance contradicts.
+
+\end{itemize}
+
+\todo two-sample approach involving original and predicted datasets with invariant predictor?
 
 \subsection{\todo Methods}
 
