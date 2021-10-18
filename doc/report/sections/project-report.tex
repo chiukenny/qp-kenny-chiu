@@ -6,7 +6,22 @@
 
 \subsection{Introduction}
 
+\todo define rkhs
+
 \subsection{Related work}
+
+\textbf{Learning invariance to unknown groups from single-environment data.} This project is inspired by the work of \textcite{Mouli:2021} who proposed a method for learning counterfactual group-invariances in neural networks given only data from a single environment. Their method is based on having a specified set of potential groups to be invariant to, and using a regularized optimization objective to ``unlearn'' the groups that contradict the data. In this work, we frame the context of determining whether being invariant to a specified group contradicts the given dataset as a hypothesis testing problem.
+\\
+
+\textbf{Domain adaptation based on learning invariances.} The work by \textcite{Mouli:2021} falls more generally under the domain adaptation literature. This literature is broad and consist of works involving varying problem settings and approaches. Recent work that reduces domain adaptation to learning invariances include (but are not limited nor mutually exclusive to) those based on invariant neural networks \parencite{Li:2018,Zhao:2019,Schwobel:2021}, invariant kernels \parencite{Li:2018,Ma:2019,Elesedy:2021:equivariant,Elesedy:2021}, and causal reasoning \parencite{Magliacane:2017,Chen:2020:scm}. The majority of these approaches involve learning invariances from available training data that come from multiple domains. Our work also shares the perspective of reducing domain adaptation to invariances. However, rather than learning invariances from data, our hypothesis testing approach determines whether a specified invariance is compatible with the data (which may come from only a single domain).
+\\
+
+\textbf{Kernel hypothesis testing.} Our setup of testing for invariances builds on the existing literature of kernel hypothesis testing, which include kernel methods for common one-sample problems \parencite{Zhang:2011,Doran:2014,Kellner:2015,Chwialkowski:2016,Jitkrittum:2020} and two-sample problems \parencite{Gretton:2007,Gretton:2012}. While the proposed approaches differ depending on the context and goal of their respective problems, most approaches are based on mapping empirical  distributions (and non-empirical distributions in the case of some one-sample problems) to a kernel mean embedding in some RKHS and comparing embeddings through the \textit{maximum mean discrepancy} (MMD) test statistic \parencite{Harchaoui:2013}. The MMD test statistic is convenient for kernel-based hypothesis tests as its null distribution can be estimated using standard methods such as bootstrap \parencite{Gretton:2012}. Our setup of the detecting invariance problem makes use of some of these existing kernel-based hypothesis tests.
+\\
+
+\textbf{Hypothesis testing for invariances.}
+% An online search with the keywords \textit{testing for invariances} will mostly return literature related to measurement invariance, which generally refers to measurement constructs being interpreted in a conceptually similar matter across people groups (primarily in a psychometric context) \parencite{Vanderberg:2000}. While in this work we also test for invariances, we are concerned with outputs in a particular dataset being invariant to a mathematical group from a group theoretic sense.
+Our hypothesis testing setup is used to detect possible invariances in the data to actions of a mathematical group. From this perspective, our work is closely related to the literature on testing for symmetries in data \parencite{Henze:2003,NgatchouWandji:2009,Partlett:2015}. However, while the literature addresses the problem of determining whether there is some aspect of invariance in the data, our work addresses the different problem of determining whether assuming the underlying distribution being invariant would contradict the data.
 
 \subsection{Background and notation}
 
