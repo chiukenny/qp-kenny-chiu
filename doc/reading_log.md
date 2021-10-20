@@ -178,3 +178,9 @@
 ## [Zhang, 2012](https://arxiv.org/ftp/arxiv/papers/1202/1202.3775.pdf)
 
 * Precursor to (Doran, 2014). Details about Gamma approximation to null distribution.
+
+# 2021-10-19
+
+## [Rag, 2017](https://proceedings.mlr.press/v54/raj17a/raj17a.pdf)
+
+* Discusses distributions defined on an orbit (constructed using a density defined over the group) and introduces orbit embeddings (mean embedding over orbit).

@@ -26,6 +26,8 @@ hypothesis test works well with checking for contradictions as tests rejects if 
 % An online search with the keywords \textit{testing for invariances} will mostly return literature related to measurement invariance, which generally refers to measurement constructs being interpreted in a conceptually similar matter across people groups (primarily in a psychometric context) \parencite{Vanderberg:2000}. While in this work we also test for invariances, we are concerned with outputs in a particular dataset being invariant to a mathematical group from a group theoretic sense.
 Our hypothesis testing setup is used to detect possible invariances in the data to actions of a mathematical group. From this perspective, our work is closely related to the literature on testing for symmetries in data \parencite{Henze:2003,NgatchouWandji:2009,Partlett:2015}. However, while the literature addresses the problem of determining whether there is some aspect of invariance in the data, our work addresses the different problem of determining whether assuming the underlying distribution being invariant would contradict the data.
 
+\todo add bit about invariant hypothesis tests?
+
 \subsection{Background and notation}
 
 \subsubsection{Testing conditional invariances in data via kernel conditional independence tests}
@@ -75,9 +77,9 @@ Given datasets from two environment, we can give an alternative formulation:
 \item
 Context: suppose we have datasets $\calD^{(j)}=\{(x_i^{(j)},y_i^{(j)})\}_{i=1}^n$ collected from two different environments $j\in\{1,2\}$ where $x_i\in\calX$ are inputs and $y_i\in\calY$ are outputs. Suppose that different environments can be represented by different transformations $g$ from some unknown group $\calG^*$ acting on $\calX$. Assume that the joint distribution factorizes as $\bbP_{XY}=\bbP_X\bbP_{Y|X}$ where $\bbP_{Y|X}$ is $\calG^*$-invariant, i.e.,
 \[
-\bbP_{Y|X} = \bbP_{Y|g\cdot X}
+\bbP_{Y|X}(y|x) = \bbP_{Y|X}(y|g\cdot x)
 \]
-for all $g\in\calG^*$. Assume that $\bbP_{Y|X}$ is fixed across environments, and $\bbP_X$ is fixed across environments only in the sense that $\bbP_X=\bbP_{g\cdot X}(g^{-1}\cdot X)$ where $\bbP_X$ and $\bbP_{g\cdot X}$ correspond to the marginals in different environments.
+for all $g\in\calG^*$. Assume that $\bbP_{Y|X}$ is fixed across environments, and $\bbP_X$ is fixed but equivariant across environments in the sense that $\bbP_X^{(1)}(x)=\bbP_X^{(2)}(g\cdot x)$ where $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ correspond to the marginals of different environments. For convenience of notation, we write $\bbP_{g\cdot X}=\bbP_X(g\cdot X)$.
 
 \item
 Objective: our goal is to determine whether a specified $\calG$ with a Haar measure $\lambda$ is the ``correct'' group, i.e., $\calG=\calG^*$.
@@ -91,17 +93,18 @@ for all $g\in\calG$ and $X\in\calX$.
 \fi
 
 \item
-Proposed approach: we set up this problem as a kernel hypothesis test for comparing distributions where the null hypothesis says that $\mathbb{P}_{Y|X}$ is $\calG$-invariant on $X$ and the alternative hypothesis says otherwise.
+Proposed approach: we set up this problem as a kernel hypothesis test for comparing distributions where the null hypothesis says that $\calG=\calG^*$ and the alternative hypothesis says otherwise.
 \\
 
-Under our setup, the orbit-averaged joint distributions should be identical only if (\todo) $\calG=\calG^*$, i.e.,
-\[
-\int_{\calG^*}\bbP_{g\cdot X}^{(1)}\bbP_{Y|g\cdot X}^{(1)}\mathrm{d}\lambda(g) = \int_{\calG^*}\bbP_{g\cdot g'\cdot X}^{(1)}\bbP_{Y|g\cdot g'\cdot X}^{(1)}\mathrm{d}\lambda(g) = \int_{\calG^*}\bbP_{g\cdot X}^{(2)}\bbP_{Y|g\cdot X}^{(2)}\mathrm{d}\lambda(g)\;.
-\]
-$\calG^*$-invariance of $\bbP_{Y|X}$ is needed here because we only transform $X$ (\todo).
-\\
+Let $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ denote the marginal distributions for the two environments where $\bbP_{g'\cdot X}^{(1)}=\bbP_X^{(2)}$ for some $g'\in\calG^*$. By assumptions from the setup and from working under the null, the orbit-averaged joint distributions should be equivalent, i.e.,
+\begin{align*}
+\int_{\calG}\bbP_{(g\cdot X)Y}^{(1)}\mathrm{d}\lambda(g) &=
+\bbP_{Y|X}\int_{\calG}\bbP_{g\cdot X}^{(1)}\mathrm{d}\lambda(g) \\
+&= \bbP_{Y|X}\int_{\calG}\bbP_{g\cdot g'\cdot X}^{(1)}\mathrm{d}\lambda(g) \\
+&= \bbP_{Y|X}\int_{\calG}\bbP_{g\cdot X}^{(2)}\mathrm{d}\lambda(g) = \int_{\calG}\bbP_{(g\cdot X)Y}^{(2)}\mathrm{d}\lambda(g) \;.
+\end{align*}
 
-The MMD test statistic is based on the orbit-averaged kernel mean embeddings. The null distribution should still be computable. (\todo).
+The MMD test statistic is based on comparing the orbit-averaged kernel mean embeddings (\todo how to estimate?). The null distribution should still be computable. (\todo).
 
 \iffalse
 From our paired setup, we have empirical distributions $\widehat{\bbP}_X^{(1)}=\widehat{\bbP}_{g'\cdot X}^{(2)}$. We can approximate the joint distributions by
@@ -129,6 +132,12 @@ Conceptual idea: the joint distribution $\bbP_{XY}$ can be reduced to $\bbP_{(\c
 
 \item
 An approach based on one dataset and comparing the kernel mean embedding to its orbit-averaged mean embedding would not work because the marginal distributions would be different.
+
+\item
+\todo
+\[
+\mu_{(\calG\cdot X)Y} = \bbE_{(\calG\cdot X)Y}\left[\varphi(X)\otimes\varphi(Y)\right] = \int_{\calX\times\calY}\varphi(x)\otimes\varphi(y)\d\int_\calG\bbP_{(g\cdot X)Y}(x,y)\mathrm{d}\lambda(g)
+\]
 
 \end{itemize}
 
@@ -167,8 +176,8 @@ and so
 \fi
 
 
-\subsection{\todo Methods}
+\subsection{Testing for invariances via conditional independence tests}
 
-\subsection{\todo Experimental results}
+\subsection{Testing for invariances via two-sample tests}
 
 \subsection{Discussion and reflection}

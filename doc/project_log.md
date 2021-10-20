@@ -52,3 +52,15 @@
 ## 2021-10-04
 
 * Clean up remainder of technical summary.
+
+## 2021-10-16
+
+* Add formulation for kernel hypothesis testing of invariance with single-environment data.
+
+## 2021-10-17
+
+* Add related work.
+
+## 2021-10-18
+
+* Add formulation for kernel hypothesis testing of invariance with data from two environments.
