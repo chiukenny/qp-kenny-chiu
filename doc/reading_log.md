@@ -184,3 +184,10 @@
 ## [Rag, 2017](https://proceedings.mlr.press/v54/raj17a/raj17a.pdf)
 
 * Discusses distributions defined on an orbit (constructed using a density defined over the group) and introduces orbit embeddings (mean embedding over orbit).
+
+# 2021-10-20
+
+## [Maundet, 2016](https://arxiv.org/pdf/1605.09522.pdf)
+
+* Lemma 3.1 [(Smola, 2007)](https://www.gatsby.ucl.ac.uk/~gretton/papers/SmoGreSonSch07.pdf): let P be a probability measure over a measurable space. If expectation over P of kernel norm is bounded, then kernel mean embedding of P is in RKHS and expectation over P of function can be written as inner product of embedding and function.
+* Theorem 3.6 (Gretton, 2012): given iid samples from P and Q and P=/=Q, unbiased empirical estimate of MMD converges in distribution to a Gaussian.

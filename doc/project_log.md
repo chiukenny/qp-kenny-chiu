@@ -64,3 +64,12 @@
 ## 2021-10-18
 
 * Add formulation for kernel hypothesis testing of invariance with data from two environments.
+
+## 2021-10-19
+
+* Meeting with Ben.
+
+## 2021-10-20
+
+* Add preliminary notes for equivalence of embedding of orbit-averaged measure and orbit-averaged measure embedding.
+* Start writing report.

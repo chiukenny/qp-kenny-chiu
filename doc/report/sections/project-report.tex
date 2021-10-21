@@ -3,15 +3,34 @@
 % Project report section
 
 \section{Project report}
+\vspace{1em}
+
+\section*{Testing for group invariance using kernel hypothesis tests}
+\vspace{1em}
+
+\begin{abstract}
+\todo
+\end{abstract}
+
 
 \subsection{Introduction}
 
-\todo define rkhs
+(\todo: make this section logically flow better)
 
-\todo
-hypothesis test works well with checking for contradictions as tests rejects if there is evidence to contradict the null (invariance)
+Various recent works in the domain adaptation literature have framed learning to generalize across domains as learning invariances to the transformation of a group (e.g., \parencite{Mouli:2021,Schwobel:2021} \todo). Often, these works assume a group (or set of groups) of relevance a priori and encourage learning of these invariances through data using, for example, data augmentation and inductive biases in the model architecture (\todo). However, rather than trying to learn invariances from the data, it may be of interest to determine whether assuming the underlying generating process of the data being invariant would contradict what is observed in the data. This objective is particularly useful in the case where only data from a single domain are available as in the problem setting described by \textcite{Mouli:2021}.
+\\
 
-\subsection{Related work}
+In this project, we examine the problem of detecting potential invariances from a kernel hypothesis testing perspective. The objective and intuition behind the standard hypothesis testing framework appears to well-match the objective of our problem as it answers the question, \textit{if the underlying generating distribution were invariant, is there evidence in the observed data that contradicts that assumption?} For practically conducting a test of invariance, we propose using kernel-based methods for their flexibility and ability to work with high-dimensional data. The contributions of this project are as follows:
+\begin{enumerate}
+
+\item
+
+\end{enumerate}
+
+This project report is organized as follows: Section~\ref{sec:related} highlights related work in the literature and how our work differs; Section~\ref{sec:background} provides additional background for our proposed tests and introduces notation; Section~\ref{sec:condind} and Section~\ref{sec:twosample} present our proposed method in the context of two different settings; and Section~\ref{sec:discussion} concludes the report with a discussion and reflection of this project.
+
+
+\subsection{Related work}\label{sec:related}
 
 \textbf{Learning invariance to unknown groups from single-environment data.} This project is inspired by the work of \textcite{Mouli:2021} who proposed a method for learning counterfactual group-invariances in neural networks given only data from a single environment. Their method is based on having a specified set of potential groups to be invariant to, and using a regularized optimization objective to ``unlearn'' the groups that contradict the data. In this work, we frame the context of determining whether being invariant to a specified group contradicts the given dataset as a hypothesis testing problem.
 \\
@@ -19,7 +38,7 @@ hypothesis test works well with checking for contradictions as tests rejects if 
 \textbf{Domain adaptation based on learning invariances.} The work by \textcite{Mouli:2021} falls more generally under the domain adaptation literature. This literature is broad and consist of works involving varying problem settings and approaches. Recent work that reduces domain adaptation to learning invariances include (but are not limited nor mutually exclusive to) those based on invariant neural networks \parencite{Li:2018,Zhao:2019,Schwobel:2021}, invariant kernels \parencite{Li:2018,Ma:2019,Elesedy:2021:equivariant,Elesedy:2021}, and causal reasoning \parencite{Magliacane:2017,Chen:2020:scm}. The majority of these approaches involve learning invariances from available training data that come from multiple domains. Our work also shares the perspective of reducing domain adaptation to invariances. However, rather than learning invariances from data, our hypothesis testing approach determines whether a specified invariance is compatible with the data (which may come from only a single domain).
 \\
 
-\textbf{Kernel hypothesis testing.} Our setup of testing for invariances builds on the existing literature of kernel hypothesis testing, which include kernel methods for common one-sample problems \parencite{Zhang:2011,Doran:2014,Kellner:2015,Chwialkowski:2016,Jitkrittum:2020} and two-sample problems \parencite{Gretton:2007,Gretton:2012}. While the proposed approaches differ depending on the context and goal of their respective problems, most approaches are based on mapping empirical  distributions (and non-empirical distributions in the case of some one-sample problems) to a kernel mean embedding in some RKHS and comparing embeddings through the \textit{maximum mean discrepancy} (MMD) test statistic \parencite{Harchaoui:2013}. The MMD test statistic is convenient for kernel-based hypothesis tests as its null distribution can be estimated using standard methods such as bootstrap \parencite{Gretton:2012}. Our setup of the detecting invariance problem makes use of some of these existing kernel-based hypothesis tests.
+\textbf{Kernel hypothesis testing.} Our setup of testing for invariances builds on the existing literature of kernel hypothesis testing, which include kernel methods for common one-sample problems \parencite{Zhang:2011,Doran:2014,Kellner:2015,Chwialkowski:2016,Jitkrittum:2020} and two-sample problems \parencite{Gretton:2007,Gretton:2012}. While the proposed approaches differ depending on the context and goal of their respective problems, most approaches are based on mapping empirical  distributions (and non-empirical distributions in the case of some one-sample problems) to a kernel mean embedding in some reproducing kernel Hilbert space and comparing embeddings through the \textit{maximum mean discrepancy} (MMD) test statistic \parencite{Harchaoui:2013}. The MMD test statistic is convenient for kernel-based hypothesis tests as its null distribution can be estimated using standard methods such as bootstrap \parencite{Gretton:2012}. Our setup of the detecting invariance problem makes use of some of these existing kernel-based hypothesis tests.
 \\
 
 \textbf{Hypothesis testing for invariances.}
@@ -28,9 +47,22 @@ Our hypothesis testing setup is used to detect possible invariances in the data 
 
 \todo add bit about invariant hypothesis tests?
 
-\subsection{Background and notation}
+\subsection{Background and notation} \label{sec:background}
 
-\subsubsection{Testing conditional invariances in data via kernel conditional independence tests}
+We first provide some additional background that will be useful for understanding our proposed tests as well as the mathematical notation that we will use in this report.
+\\
+
+\textbf{Transformation groups}. \todo
+\\
+
+\textbf{Kernels and RKHS}. \todo
+\\
+
+\textbf{Kernel embeddings and MMD}. \todo
+
+
+\subsection{Testing for invariances via conditional independence tests} \label{sec:condind}
+
 
 \begin{itemize}
 
@@ -68,7 +100,8 @@ Multiple environments: if we had data from two environments $\calD^{(j)}=\{(x_i^
 
 \end{itemize}
 
-\subsubsection{Testing conditional invariances in data via orbit-averaged kernel two-sample tests}
+
+\subsection{Testing for invariances via two-sample tests} \label{sec:twosample}
 
 Given datasets from two environment, we can give an alternative formulation:
 
@@ -82,15 +115,13 @@ Context: suppose we have datasets $\calD^{(j)}=\{(x_i^{(j)},y_i^{(j)})\}_{i=1}^n
 for all $g\in\calG^*$. Assume that $\bbP_{Y|X}$ is fixed across environments, and $\bbP_X$ is fixed but equivariant across environments in the sense that $\bbP_X^{(1)}(x)=\bbP_X^{(2)}(g\cdot x)$ where $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ correspond to the marginals of different environments. For convenience of notation, we write $\bbP_{g\cdot X}=\bbP_X(g\cdot X)$.
 
 \item
-Objective: our goal is to determine whether a specified $\calG$ with a Haar measure $\lambda$ is the ``correct'' group, i.e., $\calG=\calG^*$.
-
-\iffalse
-\todo If so, then the conditional distribution $\mathbb{P}_{Y|X}$ is invariant to, i.e., whether
+Notation: image of $\P_X$ under $g$: $\P_{gX} = P_{X} \circ g^{-1}$.
 \[
-\bbP_{Y|X} = \bbP_{Y|g\cdot X}
+\int \P_{gX}(dx) f(x) = \int \P_X(dx) f(gx)
 \]
-for all $g\in\calG$ and $X\in\calX$.
-\fi
+
+\item
+Objective: our goal is to determine whether a specified $\calG$ with a Haar measure $\lambda$ is the ``correct'' group, i.e., $\calG=\calG^*$.
 
 \item
 Proposed approach: we set up this problem as a kernel hypothesis test for comparing distributions where the null hypothesis says that $\calG=\calG^*$ and the alternative hypothesis says otherwise.
@@ -98,34 +129,31 @@ Proposed approach: we set up this problem as a kernel hypothesis test for compar
 
 Let $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ denote the marginal distributions for the two environments where $\bbP_{g'\cdot X}^{(1)}=\bbP_X^{(2)}$ for some $g'\in\calG^*$. By assumptions from the setup and from working under the null, the orbit-averaged joint distributions should be equivalent, i.e.,
 \begin{align*}
-\int_{\calG}\bbP_{(g\cdot X)Y}^{(1)}\mathrm{d}\lambda(g) &=
-\bbP_{Y|X}\int_{\calG}\bbP_{g\cdot X}^{(1)}\mathrm{d}\lambda(g) \\
-&= \bbP_{Y|X}\int_{\calG}\bbP_{g\cdot g'\cdot X}^{(1)}\mathrm{d}\lambda(g) \\
-&= \bbP_{Y|X}\int_{\calG}\bbP_{g\cdot X}^{(2)}\mathrm{d}\lambda(g) = \int_{\calG}\bbP_{(g\cdot X)Y}^{(2)}\mathrm{d}\lambda(g) \;.
+\int_{\calG}\bbP_{(g\cdot X)Y}^{(1)}\lambda(dg) &=
+\bbP_{Y|X}\int_{\calG}\bbP_{g\cdot X}^{(1)}\lambda(dg) \\
+&= \bbP_{Y|X}\int_{\calG}\bbP_{g\cdot g'\cdot X}^{(1)}\lambda(dg) \\
+&= \bbP_{Y|X}\int_{\calG}\bbP_{g\cdot X}^{(2)}\lambda(dg) = \int_{\calG}\bbP_{(g\cdot X)Y}^{(2)}\lambda(dg) \;.
+\end{align*}
+
+Let $\calX_\calG$ denote the space of $\calG$-orbits of $\calX$, which is a measurable space assuming that $\calG$ and $\calX$ are measurable (\todo). Define $\P_{X_\calG Y}=\int_{\calG}\bbP_{(g\cdot X)Y}\lambda(dg)$ to be the probability measure on $\calX_\calG\times\calY$ obtained by orbit-averaging the joint measure $\P_{XY}$ on $\calX\times\calY$.
+
+The kernel embedding of the orbit-averaged measure corresponds to the kernel embedding of $\P_{XY}$ using a Haar-integration kernel \parencite{Haasdonk:2005} invariant in one tensor dimension given by
+\[
+\bar{k}(x\otimes y,x'\otimes y')=\int_\calG\int_\calG k(g\cdot x\otimes y, g'\cdot x'\otimes y')\lambda(dg)\lambda(dg')\;.
+\]
+Define $k_\calG$ be the kernel in the RKHS of $\calX_\calG\times\calY$ corresponding to $\bar{k}$, i.e.,
+\[
+k_\calG(x_\calG\otimes y,\cdot) = \bar{k}(x\otimes y,\cdot)\;.
+\]
+The equivalence of the embeddings then follows as
+\begin{align*}
+\mu_{\calX_\calG Y} &= \int_{\calX_\calG\times\calY}k_\calG(x_\calG\otimes y,\cdot)\P_{X_\calG Y}(dx_\calG,dy) \\
+&= \int_{\calX\times\calY}\bar{k}(x\otimes y,\cdot)\int_\calG\bbP_{XY}(g\cdot dx,dy)\lambda(dg) \\
+&= \int_\calG\int_{\calX\times\calY}\bar{k}(x\otimes y,\cdot)\bbP_{XY}(g\cdot dx,dy)\lambda(dg) \\
+&= \int_\calG\mu_{(g\cdot X)Y}\lambda(dg)\;.
 \end{align*}
 
 The MMD test statistic is based on comparing the orbit-averaged kernel mean embeddings (\todo how to estimate?). The null distribution should still be computable. (\todo).
-
-\iffalse
-From our paired setup, we have empirical distributions $\widehat{\bbP}_X^{(1)}=\widehat{\bbP}_{g'\cdot X}^{(2)}$. We can approximate the joint distributions by
-\begin{align*}
-\bbP_{XY}^{(1)} &= \bbP_X^{(1)}\bbP_{Y|X}^{(1)} \approx \widehat{\bbP}_X^{(1)}\bbP_{Y|X}^{(1)}\;, \\
-\bbP_{(g'\cdot X)Y}^{(2)} &= \bbP_{g'\cdot X}^{(2)}\bbP_{Y|g'\cdot X}^{(2)} \approx \widehat{\bbP}_{g'\cdot X}^{(2)}\bbP_{Y|g'\cdot X}^{(2)}\;.
-\end{align*}
-
-Let $\calO$ be the orbit-averaging operator \parencite{Elesedy:2021}
-\[
-\calO f(x) = \int_\calG f(g\cdot x)\mathrm{d}\lambda(g)\;.
-\]
-\parencite{Elesedy:2021,Elesedy:2021:equivariant} show that a function $f$ is $\calG$-invariant if and only if $\calO f=f$. We can likely extend this argument to a function $g(x,y)$ with two inputs where $g$ is $\calG$-invariant in one input, i.e., rewriting $g(x,y)=g_y(x)$ and $g_y(x)$ being $\calG$-invariant if and only if $\calO g_y = g_y$. Applying this to distributions, we should have $\bbP_{Y|X}$ is invariant if and only if for all $y\in\calY$,
-\[
-\bbP_{Y|X}(y|x)=\int_\calG\bbP_{Y|X}(y|g\cdot x)\mathrm{d}\lambda(g)
-\]
-and so
-\[
-\bbP_{Y|X}(y|x)\bbP_X(x)=\int_\calG\mathbb{P}_{Y|X}(y|g\cdot x)\bbP_X(x)\mathrm{d}\lambda(g) \;.
-\]
-\fi
 
 \item
 Conceptual idea: the joint distribution $\bbP_{XY}$ can be reduced to $\bbP_{(\calG\cdot X)Y}$ where $\calG\cdot X$ are the $\calG$-orbits of $\calX$. The conditional distribution of $Y$ is invariant on these orbits.
@@ -133,51 +161,7 @@ Conceptual idea: the joint distribution $\bbP_{XY}$ can be reduced to $\bbP_{(\c
 \item
 An approach based on one dataset and comparing the kernel mean embedding to its orbit-averaged mean embedding would not work because the marginal distributions would be different.
 
-\item
-\todo
-\[
-\mu_{(\calG\cdot X)Y} = \bbE_{(\calG\cdot X)Y}\left[\varphi(X)\otimes\varphi(Y)\right] = \int_{\calX\times\calY}\varphi(x)\otimes\varphi(y)\d\int_\calG\bbP_{(g\cdot X)Y}(x,y)\mathrm{d}\lambda(g)
-\]
-
 \end{itemize}
 
-\iffalse
-\todo
 
-\begin{itemize}
-
-\item
-Context: suppose we have a dataset $\calD=\{(x_i,y_i)\}_{i=1}^n$ collected from a single environment where $x_i\in\calX$ are inputs and $y_i\in\calY$ are outputs. Assume that the joint distribution factorizes as $\bbP_{XY}=\bbP_X\bbP_{Y|X}$. Assume that $\bbP_{Y|X}$ is fixed across environments but $\bbP_X$ may vary by means of some unknown group $\calG$ acting on $\calX$, i.e., $\bbP_X\neq\bbP_{g\cdot X}$ for $g\in\calG$ (each element in an $X$-orbit corresponds to a different environment). Assume that $\calG$ is a compact group with a Haar measure $\lambda$.
-
-\item
-Objective: our goal is to determine whether the conditional distribution $\mathbb{P}_{Y|X}$ is invariant to transformations $g\in\calG$ that act on $X$, i.e.,
-\[
-\mathbb{P}_{Y|X}=\mathbb{P}_{Y|g\cdot X}\;.
-\]
-
-\item
-Proposed approach: we set up this problem as a kernel hypothesis test for comparing distributions where the null hypothesis says that $\mathbb{P}_{Y|X}$ is $\calG$-invariant on $X$ and the alternative hypothesis says otherwise.
-\\
-
-Let $\calO$ be the orbit-averaging operator \parencite{Elesedy:2021}
-\[
-\calO f(x) = \int_\calG f(g\cdot x)\mathrm{d}\lambda(g)\;.
-\]
-\parencite{Elesedy:2021,Elesedy:2021:equivariant} show that a function $f$ is $\calG$-invariant if and only if $\calO f=f$. We can likely extend this argument to a function $g(x,y)$ with two inputs where $g$ is $\calG$-invariant in one input, i.e., rewriting $g(x,y)=g_y(x)$ and $g_y(x)$ being $\calG$-invariant if and only if $\calO g_y = g_y$. Applying this to distributions, we should have $\bbP_{Y|X}$ is invariant if and only if for all $y\in\calY$,
-\[
-\bbP_{Y|X}(y|x)=\int_\calG\bbP_{Y|X}(y|g\cdot x)\mathrm{d}\lambda(g)
-\]
-and so
-\[
-\bbP_{Y|X}(y|x)\bbP_X(x)=\int_\calG\mathbb{P}_{Y|X}(y|g\cdot x)\bbP_X(x)\mathrm{d}\lambda(g) \;.
-\]
-
-\end{itemize}
-\fi
-
-
-\subsection{Testing for invariances via conditional independence tests}
-
-\subsection{Testing for invariances via two-sample tests}
-
-\subsection{Discussion and reflection}
+\subsection{Discussion and reflection} \label{sec:discussion}
