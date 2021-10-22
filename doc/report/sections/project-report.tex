@@ -58,7 +58,10 @@ We first provide some additional background that will be useful for understandin
 \textbf{Kernels and RKHS}. \todo
 \\
 
-\textbf{Kernel embeddings and MMD}. \todo
+\textbf{Kernel embeddings and MMD}. \todo marginals, joints, conditionals
+\\
+
+\todo Other notation: overload distribution/measure
 
 
 \subsection{Testing for invariances via conditional independence tests} \label{sec:condind}
@@ -110,12 +113,12 @@ Given datasets from two environment, we can give an alternative formulation:
 \item
 Context: suppose we have datasets $\calD^{(j)}=\{(x_i^{(j)},y_i^{(j)})\}_{i=1}^n$ collected from two different environments $j\in\{1,2\}$ where $x_i\in\calX$ are inputs and $y_i\in\calY$ are outputs. Suppose that different environments can be represented by different transformations $g$ from some unknown group $\calG^*$ acting on $\calX$. Assume that the joint distribution factorizes as $\bbP_{XY}=\bbP_X\bbP_{Y|X}$ where $\bbP_{Y|X}$ is $\calG^*$-invariant, i.e.,
 \[
-\bbP_{Y|X}(y|x) = \bbP_{Y|X}(y|g\cdot x)
+\bbP_{Y|X}(dy|x) = \bbP_{Y|X}(dy|g\cdot x)
 \]
-for all $g\in\calG^*$. Assume that $\bbP_{Y|X}$ is fixed across environments, and $\bbP_X$ is fixed but equivariant across environments in the sense that $\bbP_X^{(1)}(x)=\bbP_X^{(2)}(g\cdot x)$ where $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ correspond to the marginals of different environments. For convenience of notation, we write $\bbP_{g\cdot X}=\bbP_X(g\cdot X)$.
+for all $g\in\calG^*$. Assume that $\bbP_{Y|X}$ is fixed across environments, and $\bbP_X$ is fixed but equivariant across environments in the sense that $\bbP_X^{(1)}(dx)=\bbP_X^{(2)}(g^{-1}\cdot dx)$ where $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ correspond to the marginals of different environments. For convenience of notation, we write $\bbP_{gX}(dx)=\P_X\circ g^{-1}(dx) = \bbP_X(g^{-1}\cdot dx)$.
 
 \item
-Notation: image of $\P_X$ under $g$: $\P_{gX} = P_{X} \circ g^{-1}$.
+Notation: image of $\P_X$ under $g$: $\P_{gX} = \P_{X} \circ g^{-1}$.
 \[
 \int \P_{gX}(dx) f(x) = \int \P_X(dx) f(gx)
 \]
@@ -127,15 +130,15 @@ Objective: our goal is to determine whether a specified $\calG$ with a Haar meas
 Proposed approach: we set up this problem as a kernel hypothesis test for comparing distributions where the null hypothesis says that $\calG=\calG^*$ and the alternative hypothesis says otherwise.
 \\
 
-Let $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ denote the marginal distributions for the two environments where $\bbP_{g'\cdot X}^{(1)}=\bbP_X^{(2)}$ for some $g'\in\calG^*$. By assumptions from the setup and from working under the null, the orbit-averaged joint distributions should be equivalent, i.e.,
+Let $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ denote the marginal distributions for the two environments where $\bbP_{g^*X}^{(1)}=\bbP_X^{(2)}$ for some $g^*\in\calG^*$. By assumptions from the setup and from working under the null, the orbit-averaged joint distributions should be equivalent, i.e.,
 \begin{align*}
-\int_{\calG}\bbP_{(g\cdot X)Y}^{(1)}\lambda(dg) &=
-\bbP_{Y|X}\int_{\calG}\bbP_{g\cdot X}^{(1)}\lambda(dg) \\
-&= \bbP_{Y|X}\int_{\calG}\bbP_{g\cdot g'\cdot X}^{(1)}\lambda(dg) \\
-&= \bbP_{Y|X}\int_{\calG}\bbP_{g\cdot X}^{(2)}\lambda(dg) = \int_{\calG}\bbP_{(g\cdot X)Y}^{(2)}\lambda(dg) \;.
+\int_{\calG}\bbP_{(gX)Y}^{(1)}\lambda(dg) &=
+\bbP_{Y|X}\int_{\calG}\bbP_{gX}^{(1)}\lambda(dg) \\
+&= \bbP_{Y|X}\int_{\calG}\bbP_{gg^*X}^{(1)}\lambda(dg) \\
+&= \bbP_{Y|X}\int_{\calG}\bbP_{gX}^{(2)}\lambda(dg) = \int_{\calG}\bbP_{(gX)Y}^{(2)}\lambda(dg) \;.
 \end{align*}
 
-Let $\calX_\calG$ denote the space of $\calG$-orbits of $\calX$, which is a measurable space assuming that $\calG$ and $\calX$ are measurable (\todo). Define $\P_{X_\calG Y}=\int_{\calG}\bbP_{(g\cdot X)Y}\lambda(dg)$ to be the probability measure on $\calX_\calG\times\calY$ obtained by orbit-averaging the joint measure $\P_{XY}$ on $\calX\times\calY$.
+Let $\calX_\calG$ denote the space of $\calG$-orbits of $\calX$, which is a measurable space assuming that $\calG$ and $\calX$ are measurable (\todo). Define $\P_{X_\calG Y}=\int_{\calG}\bbP_{(gX)Y}\lambda(dg)$ to be the probability measure on $\calX_\calG\times\calY$ obtained by orbit-averaging the joint measure $\P_{XY}$ on $\calX\times\calY$.
 
 The kernel embedding of the orbit-averaged measure corresponds to the kernel embedding of $\P_{XY}$ using a Haar-integration kernel \parencite{Haasdonk:2005} invariant in one tensor dimension given by
 \[
@@ -147,16 +150,24 @@ k_\calG(x_\calG\otimes y,\cdot) = \bar{k}(x\otimes y,\cdot)\;.
 \]
 The equivalence of the embeddings then follows as
 \begin{align*}
-\mu_{\calX_\calG Y} &= \int_{\calX_\calG\times\calY}k_\calG(x_\calG\otimes y,\cdot)\P_{X_\calG Y}(dx_\calG,dy) \\
-&= \int_{\calX\times\calY}\bar{k}(x\otimes y,\cdot)\int_\calG\bbP_{XY}(g\cdot dx,dy)\lambda(dg) \\
-&= \int_\calG\int_{\calX\times\calY}\bar{k}(x\otimes y,\cdot)\bbP_{XY}(g\cdot dx,dy)\lambda(dg) \\
-&= \int_\calG\mu_{(g\cdot X)Y}\lambda(dg)\;.
+\mu_{X_\calG Y} &= \int_{\calX_\calG\times\calY}k_\calG(x_\calG\otimes y,\cdot)\P_{X_\calG Y}(dx_\calG,dy) \\
+&= \int_{\calX\times\calY}\bar{k}(x\otimes y,\cdot)\int_\calG\bbP_{XY}(g^{-1}\cdot dx,dy)\lambda(dg) \\
+&= \int_\calG\int_{\calX\times\calY}\bar{k}(g\cdot x\otimes y,\cdot)\bbP_{XY}(dx,dy)\lambda(dg) \\
+&= \int_{\calX\times\calY}\bar{k}(x\otimes y,\cdot)\bbP_{XY}(dx,dy) \\
+&= \int_\calG\int_{\calX\times\calY}k(g\cdot x\otimes y,\cdot)\bbP_{XY}(dx,dy)\lambda(dg) \\
+&= \int_\calG\mu_{(gX)Y}\lambda(dg) \;.
 \end{align*}
 
-The MMD test statistic is based on comparing the orbit-averaged kernel mean embeddings (\todo how to estimate?). The null distribution should still be computable. (\todo).
+The MMD test statistic is based on comparing the orbit-averaged kernel mean embeddings. The MMD test statistic is \todo
+\begin{align*}
+\mathrm{MMD}(\P_{X_\calG Y}^{(1)},\P_{X_\calG Y}^{(2)}) &= \left\|\int_\calG\mu_{(gX)Y}^{(1)}\lambda(dg) - \int_\calG\mu_{(gX)Y}^{(2)}\lambda(dg)\right\|_\calH^2 \\
+&= \left\|\int_\calG\mu_{(gX)Y}^{(1)} - \mu_{(gX)Y}^{(2)}\lambda(dg)\right\|_\calH^2 \\
+&\approx \left\|\int_\calG\sum_{i=1}^n\varphi^{(1)}(x_i,y_i) - \sum_{i=1}^m\varphi^{(2)}(x_i,y_i)\lambda(dg)\right\|_\calH^2
+\end{align*}
+The null distribution should still be computable. (\todo).
 
 \item
-Conceptual idea: the joint distribution $\bbP_{XY}$ can be reduced to $\bbP_{(\calG\cdot X)Y}$ where $\calG\cdot X$ are the $\calG$-orbits of $\calX$. The conditional distribution of $Y$ is invariant on these orbits.
+Conceptual idea: the joint distribution $\bbP_{XY}$ can be reduced to $\bbP_{X_\calG Y}$. The conditional distribution of $Y$ is invariant on each orbit.
 
 \item
 An approach based on one dataset and comparing the kernel mean embedding to its orbit-averaged mean embedding would not work because the marginal distributions would be different.
