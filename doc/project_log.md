@@ -73,3 +73,12 @@
 
 * Add preliminary notes for equivalence of embedding of orbit-averaged measure and orbit-averaged measure embedding.
 * Start writing report.
+
+## 2021-10-22
+
+* Update notation and fix orbit-averaged embedding equations.
+
+## 2021-10-23
+
+* Add notes on estimating orbit-averaged MMD.
+* Write background and notation section.

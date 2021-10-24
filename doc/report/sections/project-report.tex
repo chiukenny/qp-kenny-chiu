@@ -17,7 +17,7 @@
 
 (\todo: make this section logically flow better)
 
-Various recent works in the domain adaptation literature have framed learning to generalize across domains as learning invariances to the transformation of a group (e.g., \parencite{Mouli:2021,Schwobel:2021} \todo). Often, these works assume a group (or set of groups) of relevance a priori and encourage learning of these invariances through data using, for example, data augmentation and inductive biases in the model architecture (\todo). However, rather than trying to learn invariances from the data, it may be of interest to determine whether assuming the underlying generating process of the data being invariant would contradict what is observed in the data. This objective is particularly useful in the case where only data from a single domain are available as in the problem setting described by \textcite{Mouli:2021}.
+Various recent works in the domain adaptation literature have framed learning to generalize across domains as learning conditional invariances to the transformation of a group (e.g., \parencite{Mouli:2021,Schwobel:2021} \todo). Often, these works assume a group (or set of groups) of relevance a priori and encourage learning of these invariances through data using, for example, data augmentation and inductive biases in the model architecture (\todo). However, rather than trying to learn invariances from the data, it may be of interest to determine whether assuming the underlying generating process of the data being invariant would contradict what is observed in the data. This objective is particularly useful in the case where only data from a single domain are available as in the problem setting described by \textcite{Mouli:2021}.
 \\
 
 In this project, we examine the problem of detecting potential invariances from a kernel hypothesis testing perspective. The objective and intuition behind the standard hypothesis testing framework appears to well-match the objective of our problem as it answers the question, \textit{if the underlying generating distribution were invariant, is there evidence in the observed data that contradicts that assumption?} For practically conducting a test of invariance, we propose using kernel-based methods for their flexibility and ability to work with high-dimensional data. The contributions of this project are as follows:
@@ -32,7 +32,7 @@ This project report is organized as follows: Section~\ref{sec:related} highlight
 
 \subsection{Related work}\label{sec:related}
 
-\textbf{Learning invariance to unknown groups from single-environment data.} This project is inspired by the work of \textcite{Mouli:2021} who proposed a method for learning counterfactual group-invariances in neural networks given only data from a single environment. Their method is based on having a specified set of potential groups to be invariant to, and using a regularized optimization objective to ``unlearn'' the groups that contradict the data. In this work, we frame the context of determining whether being invariant to a specified group contradicts the given dataset as a hypothesis testing problem.
+\textbf{Learning invariance to unknown groups from single-domain data.} This project is inspired by the work of \textcite{Mouli:2021} who proposed a method for learning counterfactual group-invariances in neural networks given only data from a single domain. Their method is based on having a specified set of potential groups to be invariant to, and using a regularized optimization objective to ``unlearn'' the groups that contradict the data. In this work, we frame the context of determining whether being invariant to a specified group contradicts the given dataset as a hypothesis testing problem.
 \\
 
 \textbf{Domain adaptation based on learning invariances.} The work by \textcite{Mouli:2021} falls more generally under the domain adaptation literature. This literature is broad and consist of works involving varying problem settings and approaches. Recent work that reduces domain adaptation to learning invariances include (but are not limited nor mutually exclusive to) those based on invariant neural networks \parencite{Li:2018,Zhao:2019,Schwobel:2021}, invariant kernels \parencite{Li:2018,Ma:2019,Elesedy:2021:equivariant,Elesedy:2021}, and causal reasoning \parencite{Magliacane:2017,Chen:2020:scm}. The majority of these approaches involve learning invariances from available training data that come from multiple domains. Our work also shares the perspective of reducing domain adaptation to invariances. However, rather than learning invariances from data, our hypothesis testing approach determines whether a specified invariance is compatible with the data (which may come from only a single domain).
@@ -49,19 +49,48 @@ Our hypothesis testing setup is used to detect possible invariances in the data 
 
 \subsection{Background and notation} \label{sec:background}
 
-We first provide some additional background that will be useful for understanding our proposed tests as well as the mathematical notation that we will use in this report.
+We first provide some additional background that will be useful for understanding our proposed tests as well as the mathematical notation that we will use in this report. In both of our formulations, we use $\calX$ and $\calY$ to represent the (potentially high-dimensional) space of inputs and outputs, respectively. For a random variable $X$ with support $\calX$, we overload the notation $\P_X$ to represent both its distribution and the corresponding probability measure.
 \\
 
-\textbf{Transformation groups}. \todo
+\textbf{Transformation groups}. Let $\calG$ be a transformation group that measurably acts on the input space $\calX$. For $g\in\calG$, we denote the action of $g$ on $x\in\calX$ given by the measurable map $\Phi:\calG\times\calX\rightarrow\calX$ as $g\cdot x = \Phi(g,x)$. For a set $A\subset\calX$, we write $g\cdot A=\{g\cdot x: x\in A\}$. To refer to the distribution of $g^{-1}\cdot X$ for some random variable $X$ on $\calX$, we use the image measure denoted $\P_{gX}=\P_X\circ g^{-1}$, i.e., $\P_{gX}(dx)=\P_X(g^{-1}\cdot dx)$. We assume that $\calG$ is compact and therefore has an unique (normalized) Haar measure $\lambda$ (\todo cite?).
 \\
 
-\textbf{Kernels and RKHS}. \todo
+\textbf{Kernels and RKHS}. Let $\calH_\calX$ be a reproducing kernel Hilbert space (RKHS) of functions $f:\calX\rightarrow\bbR$ on which the evaluation functional $\delta_x:\calH_\calX\rightarrow\bbR$ is continuous for all $x\in\calX$, i.e., $\delta_x[f]=f(x)$ is bounded. Then by the Riesz representation theorem, there is a unique function $k_x\in\calH_\calX$ with the reproducing property, i.e., $f(x)=\langle f,k_x\rangle_{\calH_\calX}$ for all $f\in\calH_\calX$ where $\langle\cdot,\cdot\rangle_{\calH_\calX}$ is the inner product on $\calH_{\calX}$. The function $k_x=k(x,\cdot)$, where $k:\calX\times\calX\rightarrow\bbR$ is positive definite and symmetric with $k(x,x')=\langle k_x,k_{x'}\rangle_{\calH_\calX}$, is the reproducing kernel of $\calH_\calX$. For $x\in\calX$, the function $k_x=\varphi(x)$ can be viewed as a feature map $\varphi:\calX\rightarrow\bbR^d$ where $d$ may potentially be infinite. Therefore, evaluations of the reproducing kernel $k(x,x')=\langle \varphi(x),\varphi(x')\rangle$ may be viewed as inner products on the mapped feature space. For joint spaces $\calX\times\calY$, we consider the product kernel $k_{\calX\calY}((x,y),(x',y'))=k_\calX(x,x')k_\calY(y,y')$ that has feature map $\varphi_\calX\otimes\varphi_\calY$ where $\otimes$ denotes the tensor product. Note that we will drop the context space subscript in our notation when the context space is obvious, e.g., write $\calH$ instead of $\calH_\calX$, $k$ instead of $k_{\calX\times\calY}$, $\varphi$ instead of $\varphi_\calY$, etc. (\todo cite?)
 \\
 
-\textbf{Kernel embeddings and MMD}. \todo marginals, joints, conditionals
+\textbf{Kernel embeddings}. For a distribution $\P_X\in\calH$, the \textit{kernel mean embedding} of $\P_X$ is defined as $\mu_X=\E[\varphi(X)]=\int_\calX\varphi(x)\P_X(dx)$. The kernel embedding $\mu_X$ is the unique element of $\calH$ such that $\E_X[f(X)]=\langle f,\mu_X\rangle_\calH$ for all $f\in\calH$. Let $\P_\calX$ denote the set of distributions on $\calX$. If the reproducing kernel $k$ is characteristic, the kernel embedding $\mu_X:\P_\calX\rightarrow\calH$ is injective, i.e., each distribution corresponds to an unique point in the RKHS. In this work, we assume that the kernels on the spaces $\calX$ and $\calY$ are characteristic and translation-invariant, i.e., $k(x,x') = \Psi(x-x')$ for some bounded continuous positive definite function $\Psi:\bbR^d\rightarrow\bbR$. Then under mild assumptions, the product kernel $k_{\calX\calY}=k_\calX k_\calY$ is also characteristic \parencite[Corollary 11]{Sriperumbudur:2010} and so the joint distribution kernel embedding $\mu_{XY}:\P_{\calX\calY}\rightarrow\calH$ is injective. (\todo)
 \\
 
-\todo Other notation: overload distribution/measure
+\textbf{Kernel hypothesis tests and MMD}. Let $\calD^{(1)}=\{\xo_i\}_{i=1}^{n_1}$ and $\calD^{(2)}=\{\xt_i\}_{i=1}^{n_2}$ be two datasets. Two-sample kernel hypothesis tests are generally set up to determine whether the distributions $\P_X^{(1)}$ and $\P_X^{(2)}$ that generated $\calD^{(1)}$ and $\calD^{(2)}$, respectively, are the same. These tests compare $\P_X^{(1)}$ and $\P_X^{(2)}$ by comparing their kernel embeddings through the \textit{maximum mean discrepancy} (MMD) test statistic \parencite{Gretton:2012}, which is given by
+\[
+\MMD(\P_X^{(1)},\P_X^{(2)}) = \left\|\mu_X^{(1)}-\mu_X^{(2)}\right\|_\calH \;.
+\]
+The MMD test statistic is particularly convenient in the two-sample case as its squared form can be empirically estimated through only kernel evaluations using the (biased) estimator
+\begin{align*}
+\hatMMD^2(\calD^{(1)},\calD^{(2)}) &= \left\|\frac{1}{n_1}\sum_{i=1}^{n_1}\varphi(\xo_i)-\frac{1}{n_2}\sum_{i=1}^{n_2}\varphi(\xt_i)\right\|_\calH^2 \\
+&= \frac{1}{n_1^2}\onevec_{n_1}^T\bfK^{(1)}\onevec_{n_1} + \frac{1}{n_2^2}\onevec_{n_2}^T\bfK^{(2)}\onevec_{n_2} - \frac{2}{n_1n_2}\onevec_{n_1}^T\bfK^{(12)}\onevec_{n_2}
+\end{align*}
+where $(\bfK^{(1)})_{ij}=k(\xo_i,\xo_j)$, $(\bfK^{(2)})_{ij}=k(\xt_i,\xt_j)$ and $(\bfK^{(12)})_{ij}=k(\xo_i,\xt_j)$. Under the null where $\P_X^{(1)}=\P_X^{(2)}$, the distribution of $\hatMMD$ can be estimated several ways. For example, one method is based on using a Gamma approximation where the parameters of the distribution are defined in terms of moments of the biased estimator \parencite{Gretton:2009}. Estimating the moments has a computational complexity of $O(n_1n_2)$, which is generally lower than that of other methods based on Pearson curves or bootstrapping (which has cubic cost) \parencite{Gretton:2009}. Depending on how the distribution of $\hatMMD$ is estimated, the rejection region can be computed either parametrically or through bootstrap. The kernel hypothesis testing procedure is summarized in Algorithm~\ref{alg:test}.
+
+\begin{algorithm}[h]
+\SetAlgoLined
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\Input{datasets $\calD^{(1)}$, $\calD^{(2)}$; significance level $\alpha$}
+\Output{reject (1) or no reject (0)}
+\BlankLine
+compute approximation $\hat{\P}_0$ of null distribution $\P_0$\;
+compute critical value $q^*$ such that $\hat{\P}_0(\{q\in\bbR:q\geq q^*\})=1-\alpha$\;
+compute estimate $\hatMMD(\calD^{(1)},\calD^{(2)})$\;
+\If{$\hatMMD(\calD^{(1)},\calD^{(2)})>q^*$}{
+return 1\;
+}
+return 0\;
+\caption{Kernel hypothesis test}
+\label{alg:test}
+\end{algorithm}
+
+In this project, we present two formulations of testing for invariance and discuss how to compute $\hatMMD$ (line~4 of Algorithm~\ref{alg:test}) in each formulation. Once the test statistic has been estimated, the testing procedure outlined in Algorithm~\ref{alg:test} can then be applied.
 
 
 \subsection{Testing for invariances via conditional independence tests} \label{sec:condind}
@@ -111,7 +140,7 @@ Given datasets from two environment, we can give an alternative formulation:
 \begin{itemize}
 
 \item
-Context: suppose we have datasets $\calD^{(j)}=\{(x_i^{(j)},y_i^{(j)})\}_{i=1}^n$ collected from two different environments $j\in\{1,2\}$ where $x_i\in\calX$ are inputs and $y_i\in\calY$ are outputs. Suppose that different environments can be represented by different transformations $g$ from some unknown group $\calG^*$ acting on $\calX$. Assume that the joint distribution factorizes as $\bbP_{XY}=\bbP_X\bbP_{Y|X}$ where $\bbP_{Y|X}$ is $\calG^*$-invariant, i.e.,
+Context: suppose we have datasets $\calD^{(j)}=\{(x_i^{(j)},y_i^{(j)})\}_{i=1}^{n_j}$ collected from two different environments $j\in\{1,2\}$ where $x_i\in\calX$ are inputs and $y_i\in\calY$ are outputs. Suppose that different environments can be represented by different transformations $g$ from some unknown group $\calG^*$ acting on $\calX$. Assume that the joint distribution factorizes as $\bbP_{XY}=\bbP_X\bbP_{Y|X}$ where $\bbP_{Y|X}$ is $\calG^*$-invariant, i.e.,
 \[
 \bbP_{Y|X}(dy|x) = \bbP_{Y|X}(dy|g\cdot x)
 \]
@@ -140,7 +169,7 @@ Let $\bbP_X^{(1)}$ and $\bbP_X^{(2)}$ denote the marginal distributions for the 
 
 Let $\calX_\calG$ denote the space of $\calG$-orbits of $\calX$, which is a measurable space assuming that $\calG$ and $\calX$ are measurable (\todo). Define $\P_{X_\calG Y}=\int_{\calG}\bbP_{(gX)Y}\lambda(dg)$ to be the probability measure on $\calX_\calG\times\calY$ obtained by orbit-averaging the joint measure $\P_{XY}$ on $\calX\times\calY$.
 
-The kernel embedding of the orbit-averaged measure corresponds to the kernel embedding of $\P_{XY}$ using a Haar-integration kernel \parencite{Haasdonk:2005} invariant in one tensor dimension given by
+Let $k$ be the product kernel $k(x\otimes y,x'\otimes y') = k_x(x,x')k_y(y,y')$ where $k_x,k_y$ are bounded characteristic kernels on their respective spaces. The kernel embedding of the orbit-averaged measure corresponds to the kernel embedding of $\P_{XY}$ using a Haar-integration kernel \parencite{Haasdonk:2005} invariant in one tensor dimension given by
 \[
 \bar{k}(x\otimes y,x'\otimes y')=\int_\calG\int_\calG k(g\cdot x\otimes y, g'\cdot x'\otimes y')\lambda(dg)\lambda(dg')\;.
 \]
@@ -158,13 +187,48 @@ The equivalence of the embeddings then follows as
 &= \int_\calG\mu_{(gX)Y}\lambda(dg) \;.
 \end{align*}
 
-The MMD test statistic is based on comparing the orbit-averaged kernel mean embeddings. The MMD test statistic is \todo
+The MMD test statistic is based on comparing the orbit-averaged kernel mean embeddings. The MMD test statistic is
 \begin{align*}
-\mathrm{MMD}(\P_{X_\calG Y}^{(1)},\P_{X_\calG Y}^{(2)}) &= \left\|\int_\calG\mu_{(gX)Y}^{(1)}\lambda(dg) - \int_\calG\mu_{(gX)Y}^{(2)}\lambda(dg)\right\|_\calH^2 \\
+\MMD(\P_{X_\calG Y}^{(1)},\P_{X_\calG Y}^{(2)}) &= \left\|\int_\calG\mu_{(gX)Y}^{(1)}\lambda(dg) - \int_\calG\mu_{(gX)Y}^{(2)}\lambda(dg)\right\|_\calH^2 \\
 &= \left\|\int_\calG\mu_{(gX)Y}^{(1)} - \mu_{(gX)Y}^{(2)}\lambda(dg)\right\|_\calH^2 \\
-&\approx \left\|\int_\calG\sum_{i=1}^n\varphi^{(1)}(x_i,y_i) - \sum_{i=1}^m\varphi^{(2)}(x_i,y_i)\lambda(dg)\right\|_\calH^2
+&= \left\|\int_\calG\E_{\P_{gXY}^{(1)}}\left[\varphi(X^{(1)},Y^{(1)})\right] - \E_{\P_{gXY}^{(2)}}\left[\varphi(X^{(2)},Y^{(2)})\right]\lambda(dg)\right\|_\calH^2 \;.
 \end{align*}
-The null distribution should still be computable. (\todo).
+The MMD test statistic is empirically estimated by
+\begin{align*}
+\hatMMD(\calD^{(1)},\calD^{(2)}) &= \left\|\int_\calG\frac{1}{n_1}\sum_{i=1}^{n_1}\varphi(g\cdot \xo_i,\yo_i) - \frac{1}{n_2}\sum_{i=1}^{n_2}\varphi(g\cdot \xt_i,\yt_i)\lambda(dg)\right\|_\calH^2 \\
+&= \int_\calG\int_\calG \frac{1}{n_1^2}\sum_{i=1}^{n_1}\sum_{j=1}^{n_1}k(g\cdot \xo_i\otimes \yo_i,g\cdot \xo_j\otimes \yo_j) \\
+&\quad + \frac{1}{n_2^2}\sum_{i=1}^{n_2}\sum_{j=1}^{n_2}k(g'\cdot \xt_i\otimes \yt_i,g'\cdot \xt_j\otimes \yt_j) \\
+&\quad - \frac{2}{n_1n_2}\sum_{i=1}^{n_1}\sum_{j=1}^{n_2}k(g\cdot \xo_i\otimes \yo_i,g'\cdot \xt_j\otimes \yt_j) \lambda(dg)\lambda(dg') \\
+&= \int_\calG\int_\calG \frac{1}{{n_1}^2}\onevec_{n_1}^T\bfK^{(1)}\onevec_{n_1} + \frac{1}{n_2^2}\onevec_{n_2}^T\bfK^{(2)}\onevec_{n_2} - \frac{2}{n_1n_2}\onevec_{n_1}^T\bfK^{(12)}\onevec_{n_2} \lambda(dg)\lambda(dg')
+\end{align*}
+where
+\begin{align*}
+\bfK^{(1)} &= \bfK_{gx}^{(1)}\odot \bfK_y^{(1)} \;, \\
+\bfK^{(2)} &= \bfK_{g'x}^{(2)}\odot \bfK_y^{(2)} \;, \\
+\bfK^{(12)} &= \bfK_{gx,g'x}^{(12)}\odot \bfK_{y,y}^{(12)} \\
+\end{align*}
+with $\odot$ denoting the Hadamard product, $(\bfK_x^{(\ell)})_{ij}=k_x(x_i^{(\ell)},x_j^{(\ell)})$ (similarly for $\bfK_y^{(\ell)}$), and $(\bfK_{x,x}^{(12)})_{ij}=k_x(x_i^{(1)},x_j^{(2)})$ (similarly for $\bfK_{y,y}^{(12)}$). If $\calG$ is finite and small enough, $\hatMMD$ may be computed exactly by summing over $\calG$ and weighting by the discrete Haar measure. If $\calG$ is too large or not finite, then $\hatMMD$ must be estimated by sampling $g,g'\in\calG$, i.e.,
+\begin{align*}
+\dhatMMD(\calD^{(1)},\calD^{(2)},\{g_i,g_i'\}_{i=1}^m) &= \frac{1}{m^2}\sum_{i=1}^m\sum_{j=1}^m \left(\frac{1}{{n_1}^2}\onevec_{n_1}^T\bfK_i^{(1)}\onevec_{n_1} + \frac{1}{n_2^2}\onevec_{n_2}^T\bfK_j^{(2)}\onevec_{n_2} - \frac{2}{n_1n_2}\onevec_{n_1}^T\bfK_{ij}^{(12)}\onevec_{n_2}\right) \\
+&= \frac{1}{mn_1^2}\sum_{i=1}^m\onevec_{n_1}^T\bfK_i^{(1)}\onevec_{n_1} + \frac{1}{mn_2^2}\sum_{j=1}^m\onevec_{n_2}^T\bfK_j^{(2)}\onevec_{n_2} - \frac{2}{m^2n_1n_2}\sum_{i=1}^m\sum_{j=1}^m\onevec_{n_1}^T\bfK_{ij}^{(12)}\onevec_{n_2}
+\end{align*}
+for $m\geq 1$ and where
+\begin{align*}
+\bfK_i^{(1)} &= \bfK_{g_ix}^{(1)}\odot \bfK_y^{(1)} \;, \\
+\bfK_j^{(2)} &= \bfK_{g_j'x}^{(2)}\odot \bfK_y^{(2)} \;, \\
+\bfK_{ij}^{(12)} &= \bfK_{g_ix,g_j'x}^{(12)}\odot \bfK_{y,y}^{(12)} \;. \\
+\end{align*}
+As $\hatMMD$ can be viewed as comparing distributions on the space $\calX_\calG\times\calY$, the null distribution of $\hatMMD$ can be approximated using standard methods (e.g., Gamma approximation, bootstrap, etc.) \parencite{Gretton:2009}. The null distribution of $\dhatMMD$ is the same but is now a second-layer approximation to the original distribution.
+\\
+
+Note that if the kernel $k_x$ satisfies $k_x(g\cdot x,x')=k_x(x,g^{-1}\cdot x')$, then $\bfK^{(1)}$ and $\bfK^{(2)}$ are independent of $g$ and $g'$ respectively and so $\hatMMD$ simplifies to
+\[
+\hatMMD(\calD^{(1)},\calD^{(2)}) = \frac{1}{{n_1}^2}\onevec_{n_1}^T\bfK^{(1)}\onevec_{n_1} + \frac{1}{n_2^2}\onevec_{n_2}^T\bfK^{(2)}\onevec_{n_2} - \frac{2}{n_1n_2}\onevec_{n_1}^T\left(\int_\calG\int_\calG\bfK^{(12)}\lambda(dg)\lambda(dg')\right)\onevec_{n_2} \;.
+\]
+Correspondingly, $\dhatMMD$ simplifies to
+\[
+\dhatMMD(\calD^{(1)},\calD^{(2)},\{g_i,g_i'\}_{i=1}^m) = \frac{1}{n_1^2}\onevec_{n_1}^T\bfK^{(1)}\onevec_{n_1} + \frac{1}{n_2^2}\onevec_{n_2}^T\bfK^{(2)}\onevec_{n_2} - \frac{2}{m^2n_1n_2}\sum_{i=1}^m\sum_{j=1}^m\onevec_{n_1}^T\bfK_{ij}^{(12)}\onevec_{n_2} \;.
+\]
 
 \item
 Conceptual idea: the joint distribution $\bbP_{XY}$ can be reduced to $\bbP_{X_\calG Y}$. The conditional distribution of $Y$ is invariant on each orbit.
@@ -176,3 +240,5 @@ An approach based on one dataset and comparing the kernel mean embedding to its 
 
 
 \subsection{Discussion and reflection} \label{sec:discussion}
+
+\todo challenges: conditional embeddings and joints
