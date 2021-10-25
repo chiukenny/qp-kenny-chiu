@@ -82,3 +82,7 @@
 
 * Add notes on estimating orbit-averaged MMD.
 * Write background and notation section.
+
+## 2021-10-24
+
+* Clean up formulations in report.
