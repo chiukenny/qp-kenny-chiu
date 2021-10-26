@@ -86,3 +86,8 @@
 ## 2021-10-24
 
 * Clean up formulations in report.
+
+## 2021-10-25
+
+* Finish draft of report and make edits.
+* Clean up Git repo.

@@ -63,7 +63,7 @@ The main limitations of the framework proposed by \textcite{Mouli:2021} are the 
 The main technical aspects of the paper by \textcite{Mouli:2021} include the proposed neural network learning framework and the theoretical results that justify its usage in the described problem setting. In this technical summary, we introduce the formulation and notation of the single-environment extrapolation problem, discuss the assumptions that are made and why, and explain how the proposed learning framework is used with a neural network.
 \\
 
-Note that the definitions of terms and acroynyms used in this technical summary are defined in the conceptual summary in Section~\ref{sec:conceptual}.
+Note that the definitions of terms and acronyms used in this technical summary are defined in the conceptual summary in Section~\ref{sec:conceptual}.
 
 
 \subsection{Single-environment extrapolation setting}
@@ -233,7 +233,7 @@ The main theoretical innovations include the counterfactual formulation of the s
 The theoretical results all use a similar proof technique based on logical derivations that follow from applying properties and definitions. In consideration of Theorems~1 and 2, the problem setting should generalize to groups beyond finite linear automorphisms. However, Lemma~2 and Theorem~3 do not directly apply to non-linear groups and so developing analogous results for other groups would be necessary in order to justify using them with the framework. Extending the setting to non-groups or even just to non-normal subgroups for which Theorem~2 does not apply would likely require a different learning framework altogether as G-invariances are no longer CG-invariances in this case.
 \\
 
-With regards to computation, generalizing the setting to non-finite groups (with a Haar measure) may pose a practical challenge where the Reynolds operator (or orbit-averaging operator in general) may not be computable exactly. The exponential-time procedure for computing invariant subspaces may perform poorly when a large number of groups is given even with the early termination condition. \textcite{Mouli:2021} also comment that using the early termination condition with the regularized objective may lead to inoptimal learning of the invariances, and that encouraging sparsity through an additional entropy regularization term may help with the issue (which is left for future work).
+With regards to computation, generalizing the setting to non-finite groups (with a Haar measure) may pose a practical challenge where the Reynolds operator (or orbit-averaging operator in general) may not be computable exactly. The exponential-time procedure for computing invariant subspaces may perform poorly when many groups are given even with the early termination condition. \textcite{Mouli:2021} also comment that using the early termination condition with the regularized objective may lead to suboptimal learning of the invariances, and that encouraging sparsity through an additional entropy regularization term may help with the issue (which is left for future work).
 
 \iffalse
 \begin{itemize}

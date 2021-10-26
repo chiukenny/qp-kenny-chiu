@@ -1,1 +1,1 @@
-miscellaneous goes here
+This directory contains scratch notes.

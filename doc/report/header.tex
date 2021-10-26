@@ -14,6 +14,13 @@
 \usepackage{centernot}
 
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{booktabs}
+\makeatletter
+% Booktab style
+\renewcommand*{\@algocf@pre@ruled}{\hrule height\heavyrulewidth depth0pt \kern\belowrulesep}
+\renewcommand*{\algocf@caption@ruled}{\box\algocf@capbox\kern\aboverulesep\hrule height\lightrulewidth\kern\belowrulesep}
+\renewcommand*{\@algocf@post@ruled}{\kern\aboverulesep\hrule height\heavyrulewidth\relax}
+\makeatother
 
 \usepackage[usenames,dvipsnames]{xcolor}
 
