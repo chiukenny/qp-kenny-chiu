@@ -215,7 +215,7 @@ and $\ell = \min\{|M_i|\cdot\onevec\{\|\bfom_{M_i,\argdot}\|_2^2>0\}: 1\leq i \l
 To use the learning framework, bases for the invariant subspaces for the power set of groups must first be computed. The procedure starts with the set of all groups and iterates through sets of decreasing size. While the procedure only needs to be run once for a particular initial set of groups, the runtime is technically exponential as the subspace needs to be computed for every set in the power set. This can be made the worst-case runtime by setting the procedure to terminate early once a subspace equal in size to the space of the input is found. \textcite{Mouli:2021} comment that it is unclear if the worst-case runtime occurs in practice.
 \\
 
-Once the bases have been computed, the neural network can be trained with the regularized objective $R(\argdot)$ using standard supervised learning algorithms. Note that $R(\argdot)$ is discrete, and so differentiable approximation is used during training where the indicator function $\onevec\{z>0\}$ is approximated by
+Once the bases have been computed, the neural network can be trained with the regularized objective $R(\argdot)$ using standard supervised learning algorithms. Note that $R(\argdot)$ is discrete, and so a differentiable approximation is used during training where the indicator function $\onevec\{z>0\}$ is approximated by
 \[
 \widetilde{\onevec}\{z>0\} = \frac{\tau z}{\tau z+1}
 \]
